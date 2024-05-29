@@ -17,6 +17,7 @@ export function Date({ selectedDate, onSelectDate }) {
   //const [date, setDate] = React.useState<Date>()
   //const [date, setDate] = React.useState<Date>(new Date());  
   return (
+    <div className="dark">
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -39,6 +40,7 @@ export function Date({ selectedDate, onSelectDate }) {
         />
       </PopoverContent>
     </Popover>
+    </div>
   )
 }
 export default Date;

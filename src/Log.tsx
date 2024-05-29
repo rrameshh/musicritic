@@ -14,17 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 import { Label } from "@/components/ui/label"
 
@@ -70,7 +59,7 @@ export function Log() {
     <head> <script src="https://kit.fontawesome.com/99109dcc0b.js" crossOrigin="anonymous"></script></head>
     <div className="Card white-border dark">
     
-    <Card className="w-[400px] rounded-lg border-white">
+    <Card className="w-[400px] rounded-lg">
       <CardHeader>
         <CardTitle>Log a Review</CardTitle>
         <CardDescription> </CardDescription>
@@ -115,7 +104,7 @@ export function Log() {
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick = {(e) => resetForm(e)}>Cancel</Button>
+        <Button variant="outline" onClick = {(e) => resetForm(e)}>Reset</Button>
         <Button variant="default" 
         disabled={title === '' && review === ''}
         onClick = {(e) => submitLog(e)}>

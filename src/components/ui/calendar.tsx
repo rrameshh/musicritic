@@ -14,6 +14,7 @@ function Calendar({
   ...props
 }: CalendarProps) {
   return (
+    <div className="dark">
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
@@ -57,6 +58,7 @@ function Calendar({
       }}
       {...props}
     />
+    </div>
   )
 }
 Calendar.displayName = "Calendar"
