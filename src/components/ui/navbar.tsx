@@ -1,7 +1,9 @@
 import * as React from "react"
 import { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input"
-import { useNavigate } from 'react-router-dom';
+import { Searchbar } from "@/pages/searchbar"
+import {Container} from "@/components/ui/container.tsx"
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -15,25 +17,42 @@ import {
   } from "@/components/ui/navigation-menu"
   import {Log} from '@/Log.tsx'
   
-  
+const CLIENT_ID = "15eb54ac806d4ec8b0448b6f3c61dfd7";
+const CLIENT_SECRET = "dec97a90628a478fa9106f18163cff87";  
+
+
 export function Navbar() {
     const [searchInput, setSearchInput] = useState('');
+    const [albums, setAlbums] = useState([]);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             // Execute your search function or any action here
-            navigate(`/search?q=${searchInput}`);
+            search();
+            console.log(albums);
             console.log('Enter key pressed');
+            navigate(`/results`, { state: { albums } });
         }
     };
 
     const navigateToHome = () => {
         navigate('/');
     }
+    const navigateToSearch = () => {
+    
+        if (location.pathname === '/results') {
+            console.log("Already on results page, no need to navigate again.");
+            // Optionally, you can perform some action here if you don't want to navigate again
+        } else {
+            navigate('/results');
+        }
+    }
+
    
     return (
-        <>
+        <Container>
         <NavigationMenu>
             <NavigationMenuList>
             <NavigationMenuItem>
@@ -43,29 +62,21 @@ export function Navbar() {
                 </NavigationMenuLink>
                 {/* </Link> */}
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            {/* <NavigationMenuItem>
                     <NavigationMenuTrigger> Log Review</NavigationMenuTrigger>
                     <NavigationMenuContent>
                     <Log />
                     </NavigationMenuContent>
-             </NavigationMenuItem>
+             </NavigationMenuItem> */}
              <NavigationMenuItem>
-                    {/* <NavigationMenuTrigger> Search: </NavigationMenuTrigger>
-                    <NavigationMenuContent> */}
-                    <div className="flex w-full max-w-sm items-center space-x-2">
-                    <Input 
-                    type="search" 
-                    placeholder="Search" 
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    />
-                    </div>
-                    {/* </NavigationMenuContent> */}
+                <NavigationMenuLink onClick = {navigateToSearch} className={navigationMenuTriggerStyle()}>
+                 Search for Albums (addimg)
+                </NavigationMenuLink>
              </NavigationMenuItem>
+        
             </NavigationMenuList>
         </NavigationMenu>
-        </>
+        </Container>
     )
 }
-export default Navbar;
+export default {Navbar};

@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 
-export function Log() {
+export function Log({ albumID, albumName} ) {
   const [log, setLog] = useState("");
   const [logs, setLogs] = useState([]);
   const [clickedStar, setClickedStar] = useState(1);
@@ -43,6 +43,7 @@ export function Log() {
     e.preventDefault();
     const newLog = {
       profile: 'Test',
+  
       title: title,
       description: review,
       rating: clickedStar, 
@@ -68,13 +69,15 @@ export function Log() {
         <form>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-             <Label htmlFor="Song Title: ">Song Title: </Label>
-              <Input
+             <Label htmlFor="Song Title">Album Title: {albumName}</Label>
+              {/* <Input
               id="title"
               type="text"
               value={title} // Controlled value
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter song title" />
+              placeholder="Enter song title" /> */}
+              
+
               </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="Review">Review: </Label>
@@ -95,11 +98,13 @@ export function Log() {
               selectedDate={date}
               onSelectDate={setDate}
             />
+            </div >
+            <div className="flex justify-center">
+              <Stars 
+                selectedStar = {clickedStar}
+                setSelectedStar = {setClickedStar}
+              />
             </div>
-            <Stars 
-              selectedStar = {clickedStar}
-              setSelectedStar = {setClickedStar}
-            />
           </div>
         </form>
       </CardContent>
