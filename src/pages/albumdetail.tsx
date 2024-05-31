@@ -4,6 +4,9 @@ import { Container } from '@/components/ui/container'
 import { Navbar } from '@/components/ui/navbar.tsx'
 import { Button } from '@/components/ui/button'
 import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import {Stars} from "@/components/ui/stars.tsx"
+
 import { Log } from '@/Log.tsx'
 import {
     Dialog,
@@ -22,6 +25,7 @@ const CLIENT_SECRET = "dec97a90628a478fa9106f18163cff87";
 const AlbumDetailPage = () => {
   const { id } = useParams();
   const [album, setAlbum] = useState(null);
+  const [reviews, setReviews] = useState([]);
   
 
   useEffect(() => {
@@ -62,6 +66,20 @@ const AlbumDetailPage = () => {
     getAlbumInfo(id);
   }, [id]);
 
+  useEffect(() => {
+    async function fetchAlbumReviews(albumId) {
+        try {
+            const response = await axios.get(`http://localhost:8808/song_reviews/${albumId}`);
+            setReviews(response.data);
+        } catch (error) {
+            console.error("Error fetching album reviews:", error.message);
+        }
+    }
+    if (album) {
+        fetchAlbumReviews(album.id);
+    }
+}, [album]);
+
   return (
     <div>
       <Container>
@@ -94,7 +112,7 @@ const AlbumDetailPage = () => {
                             <Button>Toggle Log</Button> 
                         </DialogTrigger>
                         <DialogContent>
-                        <Log albumId={album.id} albumName={album.name} />
+                            <Log albumID = {album.id} albumName={album.name}/>
                         </DialogContent>
                     </Dialog>
 
@@ -103,7 +121,29 @@ const AlbumDetailPage = () => {
                 </div>
               </div>
             </div>
-            <div className="two"></div>
+            <div className="two text-left">
+            <Separator />
+            <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-left mt-4">
+                Logs for {album.name}
+            </h3>
+            <ul>
+            <div className='mt-2 mb-4'>
+            {reviews.map((review, index) => (
+                <li key={index}>
+                <div className='mt-2 mb-2'>
+                <Badge>{review.profile}</Badge>
+                <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
+                    <Stars selectedStar={review.rating} setSelectedStar={null}/>
+                </p>
+                <p className="inline-block mr-2 text-sm text-muted-foreground"> {review.date_listened ? review.date_listened.toISOString() : 'N/A'}</p>
+                <p className="leading-7 [&:not(:first-child)]:mt-3"> {review.review}</p>
+                </div>
+                </li>
+                
+            ))}
+            </div>
+            </ul>
+            </div>
             <div className="three">
             </div>
           </div>

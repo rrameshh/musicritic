@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {Stars} from "@/components/ui/stars.tsx"
 import {Date} from "@/components/ui/date"
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -14,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-
+import axios from 'axios'
 import { Label } from "@/components/ui/label"
 
 
@@ -30,6 +31,7 @@ export function Log({ albumID, albumName} ) {
 
   const [date, setDate] = useState(startOfToday());
   const [dates, setDates] = useState([]);
+  const navigate = useNavigate();
   
 
   const resetForm = (e) => {
@@ -39,20 +41,24 @@ export function Log({ albumID, albumName} ) {
     setClickedStar(1);
     setDate(startOfToday());
   }
-  const submitLog = (e) => {
+  const submitLog = async (e) => {
     e.preventDefault();
     const newLog = {
-      profile: 'Test',
-  
-      title: title,
-      description: review,
-      rating: clickedStar, 
-      date: date
+      profile: "Test",
+      albumID: albumID,
+      albumName: albumName,
+      review: review,
+      rating: clickedStar,
+      date: date,
+    };
+    console.log(newLog);
+    try {
+      await axios.post("http://localhost:8808/song_reviews", newLog);
+      console.log("Log submitted successfully!");
+      resetForm(e);
+    } catch (err) {
+      console.log(err);
     }
-    //toast('logged');
-    // setLog([...log, newLog]);
-    
-    resetForm(e);
   };
 
   return (
@@ -76,8 +82,6 @@ export function Log({ albumID, albumName} ) {
               value={title} // Controlled value
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter song title" /> */}
-              
-
               </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="Review">Review: </Label>

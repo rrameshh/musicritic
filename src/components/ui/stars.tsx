@@ -36,7 +36,7 @@ export function Stars({ selectedStar, setSelectedStar }) {
              {[...Array(5)].map((_, i) => (
              <i
                 key={i}
-                className={`far fa-star display-4 ${i < selectedStar ? 'fas' : (i < hoveredStar ? 'fas' : 'far')}`}
+                className={`accent far fa-star display-4 ${i < selectedStar ? 'fas' : (i < hoveredStar ? 'fas' : 'far')}`}
                 onMouseOver={() => handleMouseOver(i + 1)}
                 onMouseOut={handleMouseOut}
                 onClick={() => handleClick(i + 1)}
