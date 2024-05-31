@@ -1,28 +1,28 @@
-import * as React from "react";
+import React, { useState } from 'react';
 
-export function Stars({ selectedStar, setSelectedStar }) {
-    const [hoveredStar, setHoveredStar] = React.useState(0);
-    //const [clickedStar, setClickedStar] = React.useState(0);
+interface StarsProps {
+    selectedStar: number;
+    setSelectedStar: (index: number) => void;
+}
 
-    const handleMouseOver = (index) => {
-        //if (selectedStar === 0) {
-            setHoveredStar(index);
-        //}
+const Stars: React.FC<StarsProps> = ({ selectedStar, setSelectedStar }) => {
+    const [hoveredStar, setHoveredStar] = useState<number>(0);
+
+    const handleMouseOver = (index: number) => {
+        setHoveredStar(index);
     };
 
     const handleMouseOut = () => {
-        ///if (selectedStar === 0) {
-            setHoveredStar(0);
-        //}
+        setHoveredStar(0);
     };
 
-    const handleClick = (index) => {
+    const handleClick = (index: number) => {
         setSelectedStar(index);
         setHoveredStar(0);
     };
 
     return (
-        <> 
+        <>
             <head>
                 <link
                     rel="stylesheet"
@@ -33,20 +33,19 @@ export function Stars({ selectedStar, setSelectedStar }) {
                 />
             </head>
             <div style={{ display: 'inline-block' }}>
-             {[...Array(5)].map((_, i) => (
-             <i
-                key={i}
-                className={`accent far fa-star display-4 ${i < selectedStar ? 'fas' : (i < hoveredStar ? 'fas' : 'far')}`}
-                onMouseOver={() => handleMouseOver(i + 1)}
-                onMouseOut={handleMouseOut}
-                onClick={() => handleClick(i + 1)}
-                style={{ display: 'inline-block' }}
-            />
-            ))}
+                {[...Array(5)].map((_, i) => (
+                    <i
+                        key={i}
+                        className={`accent far fa-star display-4 ${i < selectedStar ? 'fas' : (i < hoveredStar ? 'fas' : 'far')}`}
+                        onMouseOver={() => handleMouseOver(i + 1)}
+                        onMouseOut={handleMouseOut}
+                        onClick={() => handleClick(i + 1)}
+                        style={{ display: 'inline-block' }}
+                    />
+                ))}
             </div>
-
         </>
     );
-}
+};
 
 export default Stars;

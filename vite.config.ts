@@ -11,4 +11,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  define: {
+    'import.meta.env.VITE_CLIENT_ID': JSON.stringify(process.env.CLIENT_ID),
+    'import.meta.env.VITE_CLIENT_SECRET': JSON.stringify(process.env.CLIENT_SECRET),
+  },
 })
