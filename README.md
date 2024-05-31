@@ -1,30 +1,60 @@
-# React + TypeScript + Vite
+## Spotiboxd
+Spotiboxd is a web application inspired by Letterboxd, but with Spotify integration. Users can search, review, and rate albums, through the Spotify API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#Features
+Album Database: Browse a vast database of albums, view details, and reviews.
+Rating & Reviews: Users can rate and review movies.
 
-Currently, two official plugins are available:
+Technologies Used
+Frontend
+React: A JavaScript library for building user interfaces.
+Tailwind CSS: A utility-first CSS framework for building custom designs quickly.
+Axios: Promise-based HTTP client for the browser and Node.js.
+React Router: Declarative routing for React.
+Vite: for deployment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Backend
+Node.js: A JavaScript runtime built on Chrome's V8 JavaScript engine.
+Express.js: Fast, unopinionated, minimalist web framework for Node.js.
+MySQL: To manage reviews in a database
+Spotify API: Integrate Spotify API to fetch playlist, album, and track details
+Installation
+Clone the repository:
 
-## Expanding the ESLint configuration
+bash
+Copy code
+git clone https://github.com/rrameshh/spotiboxd.git
+Navigate to the project directory:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+bash
+Copy code
+cd spotiboxd
+Install dependencies:
 
-- Configure the top-level `parserOptions` property like this:
+Copy code
+npm install
+Set up environment variables:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+Create a .env file in the root of the backend directory with the following variables:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+makefile
+SPOTIFY_CLIENT_ID=yourclientid
+SPOTIFY_CLIENT_SECRET=yourclientsecret
+Run the backend server:
+
+bash
+Copy code
+cd backend
+npm start
+Run the frontend:
+
+bash
+Copy code
+cd spotiboxd
+npm run dev
+
+Contributing
+Contributions are welcome! Feel free to submit pull requests or open issues for bug fixes, new features, or enhancements.
+
+License
+This project is licensed under the MIT License.
