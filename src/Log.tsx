@@ -51,7 +51,7 @@ export function Log({ albumID, albumName }: LogProps) {
     };
     console.log(newLog);
     try {
-      const response: AxiosResponse = await axios.post("http://localhost:8808/song_reviews", newLog);
+      const response: AxiosResponse = await axios.post("https://marked-boats-production.up.railway.app/song_reviews/", newLog);
       console.log(response);
       resetForm(e);
     } catch (err) {

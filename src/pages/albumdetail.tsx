@@ -88,7 +88,7 @@ export const AlbumDetailPage = () => {
     useEffect(() => {
         async function fetchAlbumReviews(albumId: string) {
             try {
-                const response = await axios.get(`http://localhost:8808/song_reviews/${albumId}`);
+                const response = await axios.get(`https://marked-boats-production.up.railway.app/song_reviews/${albumId}`);
                 setReviews(response.data);
             } catch (error) {
                 console.log("Error fetching album reviews");

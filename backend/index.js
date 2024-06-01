@@ -17,6 +17,7 @@ const db = mysql.createConnection({
 });
 
 
+
 app.get("/", (req, res)=>{
     res.json("Hello this is the backend")
 })
@@ -75,7 +76,7 @@ app.delete("/song_reviews/:id", (req, res) => {
     });
 });
 
-const port = process.env.PORT || 8808; // Use port from environment variable or default to 3000
+const port = process.env.DB_PORT; // Use port from environment variable or default to 3000
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
