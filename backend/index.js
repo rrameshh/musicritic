@@ -3,14 +3,18 @@ const mysql = require('mysql2');
 const cors = require("cors");
 
 const app = express();
+require('dotenv').config()
+
 app.use(express.json());
 app.use(cors());
+
 const db = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password:"57152000",
-    database: "logs"
-})
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+});
 
 
 app.get("/", (req, res)=>{
@@ -30,13 +34,6 @@ app.get("/song_reviews", (req, res)=>{
 
 app.post("/song_reviews", (req, res) => {
     const q = "INSERT INTO song_reviews(`profile`, `albumID`, `albumName`, `review`, `rating`, `date_listened`) VALUES (?)";
-    // const values = [
-    // req.body.profile,
-    // req.body.albumID,
-    // req.body.albumName,
-    // req.body.review,
-    // req.body.rating,
-    // req.body.data_listened,];
     const values = [
         req.body.profile,
         req.body.albumID,
@@ -52,6 +49,7 @@ app.post("/song_reviews", (req, res) => {
     })
 }) 
 
+
 app.get("/song_reviews/:albumId", (req, res) => {
     const albumId = req.params.albumId;
     const q = "SELECT * from song_reviews WHERE albumID = ?";
@@ -65,6 +63,19 @@ app.get("/song_reviews/:albumId", (req, res) => {
     });
 });
 
-app.listen(8808, () => {
-    console.log("connected to backend");
-}) 
+
+app.delete("/song_reviews/:id", (req, res) => {
+    const reviewId = req.params.id;
+    const q = "DELETE FROM song_reviews WHERE id = ?";
+    db.query(q, [reviewId], (err, data) => {
+        if (err) {
+            return res.json(err);
+        }
+        return res.json("review has been deleted succesfully");
+    });
+});
+
+const port = process.env.PORT || 8808; // Use port from environment variable or default to 3000
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
