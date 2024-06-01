@@ -1,30 +1,77 @@
-# React + TypeScript + Vite
+# Spotiboxd
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Spotiboxd is a web application inspired by Letterboxd, but with Spotify integration. Users can review and rate songs, create watchlists, and discover new music based on their preferences through the Spotify API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Song Database**: Browse a vast database of albums, tracks, and playlists.
+- **Rating & Reviews**: Users can rate and review movies.
+- **Spotify Integration**: Discover music related to your movie preferences through Spotify API.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Frontend
 
-- Configure the top-level `parserOptions` property like this:
+- **React**: A JavaScript library for building user interfaces.
+- **Tailwind CSS**: A utility-first CSS framework for building custom designs quickly.
+- **Axios**: Promise-based HTTP client for the browser and Node.js.
+- **React Router**: Declarative routing for React.
+- **Vite**: for deployment/packaging
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+### Backend
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- **Express.js**: Fast, unopinionated, minimalist web framework for Node.js.
+- **MySQL**: To Create, Read, Update, and Delete reviews per album in the database
+- **Spotify API**: Integrate Spotify API to fetch albums and playlists
+
+## Installation
+
+1. Clone the repository:
+
+   ```
+   git clone https://github.com/rrameshh/spotiboxd.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```
+   cd spotiboxd
+   ```
+
+3. Install dependencies:
+
+   ```
+   npm install
+   ```
+
+4. Set up environment variables:
+   
+   Create a `.env` file in the root of the `backend` directory with the following variables:
+
+   ```
+   SPOTIFY_CLIENT_ID=yourclientid
+   SPOTIFY_CLIENT_SECRET=yourclientsecret
+   ```
+
+5. Run the backend server:
+
+   ```
+   cd backend
+   npm start
+   ```
+
+6. Run the frontend:
+
+   ```
+   cd frontend
+   npm run dev
+   ```
+
+## Contributing
+
+Contributions are welcome! Feel free to submit pull requests or open issues for bug fixes, new features, or enhancements.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
