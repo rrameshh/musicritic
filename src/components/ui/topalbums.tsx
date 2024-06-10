@@ -30,7 +30,7 @@ export const TopAlbums: React.FC = () => {
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const CLIENT_SECRET= import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
   const playlistIds: string[] = ["37i9dQZEVXbKCOlAmDpukL", "12sDF4RTu8jG3ltTnqsDGZ"];
-  const Titles: string[] = ["My personal favs", "Today's Top Hits", "playlist3"];
+  const Titles: string[] = ["My personal favs", "Today's Top Hits"];
   const [playlists, setPlaylists] = useState<{ [key: string]: Playlist }>({});
 
   useEffect(() => {

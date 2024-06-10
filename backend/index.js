@@ -16,6 +16,18 @@ const db = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
+function keepConnectionAlive() {
+    connection.query('SELECT 1', (error, results, fields) => {
+      if (error) {
+        console.error('Error keeping connection alive:', error);
+      } else {
+        console.log('Connection kept alive');
+      }
+    });
+  }
+
+  setInterval(keepConnectionAlive, 5 * 60 * 1000); // 5 minutes
+
 
 
 app.get("/", (req, res)=>{
