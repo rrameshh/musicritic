@@ -27,8 +27,10 @@ function keepConnectionAlive() {
   }
 
   setInterval(keepConnectionAlive, 5 * 60 * 1000); // 5 minutes
+  
 
 
+  
 
 app.get("/", (req, res)=>{
     res.json("Hello this is the backend")
