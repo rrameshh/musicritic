@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { isAsyncFunction } from 'util/types';
+import UserTop from '@/components/ui/usertop.tsx';
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx";
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
 const redirectUrl = 'http://localhost:5173/'; // Your redirect URL - must be localhost URL and/or HTTPS
@@ -9,82 +10,215 @@ const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
 const scope = 'user-read-private user-read-email';
 
-const currentToken = {
-    get access_token() { return localStorage.getItem('access_token') || null; },
-    get refresh_token() { return localStorage.getItem('refresh_token') || null; },
-    get expires_in() { return localStorage.getItem('refresh_in') || null },
-    get expires() { return localStorage.getItem('expires') || null },
-  
-    save: function (response) {
-      const { access_token, refresh_token, expires_in } = response;
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      localStorage.setItem('expires_in', expires_in);
-  
-      const now = new Date();
-      const expiry = new Date(now.getTime() + (expires_in * 1000));
-      localStorage.setItem('expires', expiry);
-    }
-};
+interface UserProfile {
+    displayName: string;
+    id: string;
+    pfp: string;
+}
+
+interface TokenResponse {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+}
 
 const Authorization = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [refreshToken, setRefreshToken] = useState<string | null>(null);
+    const [expiresIn, setExpiresIn] = useState<number | null>(null);
+    const [expires, setExpires] = useState<Date | null>(null);
 
-    useEffect(() => {
+    // useEffect(() => {
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const code = urlParams.get('code');
+    //     if (code) {
+    //         getToken(code);
+    //     } else {
+    //         checkTokenExpiry();
+    //     }
+    // }, []);
+
+//    useEffect(() => {
+//         const storedAccessToken = localStorage.getItem('access_token');
+//         const storedRefreshToken = localStorage.getItem('refresh_token');
+
+//         // if (storedAccessToken  && storedRefreshToken) {
+//         //     setAccessToken(storedAccessToken);
+//         //     setRefreshToken(storedRefreshToken);
+//         //     getUserData(storedAccessToken);
+//         //     // setIsLoggedIn(true);
+//         // } else {
+//             console.log("we gotta be here");
+//             const urlParams = new URLSearchParams(window.location.search);
+//             const code = urlParams.get('code');
+//             // setIsLoggedIn(true);
+//             if (code) {
+//                 getToken(code);
+//             }
+//             else {
+//                 checkTokenExpiry();
+//             }
+           
+//         //}
+//     }, []) ;
+
+
+useEffect(() => {
+    const storedAccessToken = localStorage.getItem('access_token');
+    const storedRefreshToken = localStorage.getItem('refresh_token');
+
+    if (storedAccessToken && storedRefreshToken) {
+        setAccessToken(storedAccessToken);
+        setRefreshToken(storedRefreshToken);
+        getUserData(storedAccessToken);
+    } else {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         if (code) {
             getToken(code);
+        } else {
+            setIsLoading(false);
         }
-        const accessToken = localStorage.getItem('access_token');
-        if (accessToken) {
-            setIsLoggedIn(true);
-            console
-        }
-    }, []);
+    }
+}, []);
 
-    async function getUserData() {
+    async function getToken(code: string) {
+        let codeVerifier = localStorage.getItem('code_verifier');
+        const payload = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                client_id: clientId,
+                grant_type: 'authorization_code',
+                code,
+                redirect_uri: redirectUrl,
+                code_verifier: codeVerifier,
+            }).toString(), // Convert the body to a URL encoded string
+
+        };
+        const response = await fetch(tokenEndpoint, payload);
+        const data = await response.json();
+        console.log(data);
+        console.log('Access token:', data.access_token);
+        if (data.access_token) {
+            setAccessToken(data.access_token);
+            setRefreshToken(data.refresh_token);
+            setExpiresIn(data.expires_in);
+            setExpires(new Date(new Date().getTime() + (data.expires_in * 1000)));
+            localStorage.setItem('access_token', data.access_token);
+            localStorage.setItem('refresh_token', data.refresh_token);
+            getUserData(data.access_token);
+            
+            
+        }
+    }
+
+    async function getUserData(storedAccessToken) {
         const response = await fetch("https://api.spotify.com/v1/me", {
             method: 'GET',
-            headers: { 'Authorization': 'Bearer ' + currentToken.access_token },
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') },
         });
 
+        if (response.status === 401) {
+            // Token expired, refresh token
+            // await refreshTokenClick();
+            console.log("401 response means refresh token i think")
+            // Retry fetching user data with the new access token
+            checkTokenExpiry();
+            await refreshTokens(storedAccessToken);
+            // await getUserData();
+            return;
+        }
+
         const userData = await response.json();
-        console.log(userData); // Log user data
-    // You can set the user data to state or perform any other actions here
-    }
-
-async function getToken(code) {
-    // stored in the previous step
-
-    let codeVerifier = localStorage.getItem('code_verifier');
-    const payload = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            client_id: clientId,
-            grant_type: 'authorization_code',
-            code,
-            redirect_uri: redirectUrl,
-            code_verifier: codeVerifier,
-        }).toString(), // Convert the body to a URL encoded string
-    };
-
-    const response = await fetch(tokenEndpoint, payload);
-    const data = await response.json();
-    console.log(data);
-    if (data.access_token) {
-        currentToken.save(data);
+        const profile = {
+            displayName: userData.display_name,
+            id: userData.id,
+            pfp: userData.images[1]
+        }
+        setCurrentUser(profile);
         setIsLoggedIn(true);
-    
-        getUserData(); // Call getUserData after obtaining the access token
     }
-}
 
+    async function refreshTokens(refreshToken: string) {
+        const payload = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken,
+                client_id: clientId
+            }),
+        };
+        const response = await fetch(tokenEndpoint, payload);
+        const responseData = await response.json();
+        console.log(responseData);
+    
+        if (responseData && responseData.access_token && responseData.refresh_token) {
+            setAccessToken(responseData.access_token);
+            setRefreshToken(responseData.refresh_token);
+            setExpiresIn(responseData.expires_in);
+            setExpires(new Date(new Date().getTime() + (responseData.expires_in * 1000)));
+            localStorage.setItem('refresh_token', responseData.refresh_token);
+            localStorage.setItem('access_token', responseData.access_token);
+        } else {
+            console.error("Error refreshing tokens:", responseData);
+            // Handle error scenario
+        }
+    
+        return responseData;
+    }
+    
 
-    const redirectToSpotifyAuthorize = async () =>  {
+    async function handleTokenExpiration() {
+
+        const tokenResponse = await refreshTokens(localStorage.getItem('refresh_token')?.toString());
+        
+        if (tokenResponse.access_token && tokenResponse.refresh_token) {
+            console.log("something workeds?");
+            console.log(tokenResponse.access_token);
+            console.log(tokenResponse.refresh_token);
+            localStorage.setItem('access_token', tokenResponse.access_token);
+            localStorage.setItem('refresh_token', tokenResponse.refresh_token);
+            getUserData(tokenResponse.access_token);
+            setIsLoggedIn(true);
+        }
+        else
+            console.log("refreshTokens did not do anything");
+        //     if (tokenResponse.access_token) {
+
+        //         console.log("Token refreshed successfully");
+        //     } else {
+        //         console.error("Failed to refresh access token");
+        //         // Handle failure scenario
+        //     }
+        //  else {
+        //     console.error("No refresh token available");
+        //     // Handle scenario where refresh token is not available
+        // }
+    }
+
+    const checkTokenExpiry = () => {
+        const expiry = expires;
+        if (expiry && new Date(expiry) > new Date()) {
+            setIsLoggedIn(true);
+            getUserData(localStorage.getItem('access_token')?.toString());
+        } else {
+            // Token expired, refresh token
+            // refreshTokenClick();
+            console.log("time to refresh");
+            handleTokenExpiration();
+        }
+    }
+
+    const redirectToSpotifyAuthorize = async () => {
         const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const randomValues = crypto.getRandomValues(new Uint8Array(64));
         const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], "");
@@ -99,7 +233,6 @@ async function getToken(code) {
             .replace(/\//g, '_');
 
         window.localStorage.setItem('code_verifier', code_verifier);
-
         const authUrl = new URL(authorizationEndpoint)
         const params = {
             response_type: 'code',
@@ -112,6 +245,7 @@ async function getToken(code) {
 
         authUrl.search = new URLSearchParams(params).toString();
         window.location.href = authUrl.toString(); // Redirect the user to the authorization server for login
+
     }
 
     const logoutClick = () => {
@@ -119,22 +253,51 @@ async function getToken(code) {
         window.location.href = redirectUrl;
     }
 
-    const refreshTokenClick = async () => {
-        const token = await refreshToken();
-        currentToken.save(token);    
+    useEffect(() => {
+        const expiry = expires;
+        if (expiry && new Date(expiry) > new Date()) {
+            setIsLoggedIn(true);
+            setIsLoading(false);
+            getUserData(accessToken);
+        } else {
+            handleTokenExpiration();
+        }
+    }, [expires]);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
     }
 
-    if (isLoggedIn) {
+    if (isLoggedIn && currentUser) {
+        const curr = currentUser;
+        if (curr != null) {
+            return (
+                <div className="inline flex flex-col items-center justify-center mt-4">
+                    <img className="rounded-full w-100 h-100" src={curr.pfp.url} alt={curr.displayName} />
+                    <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
+                        Hello {curr.displayName}!
+                    </h1>
+                    <Button onClick={logoutClick}> Logout </Button>
+                    <UserTop />
+                </div>
+            );
+
+        }
+        else {
+            return (
+                <div>Loading ... </div>
+            );
+        }
+    }
+    else {
         return (
             <>
-                <h1></h1>
-                <Button onClick={logoutClick}> Logout </Button>
+                <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
+                        Welcome to Spotiboxd!
+                    </h1>
+                <Button onClick={redirectToSpotifyAuthorize}> Login </Button>
             </>
             
-        )
-    } else {
-        return (
-            <Button onClick={redirectToSpotifyAuthorize}> Log in Button </Button>
         )
     }
 }
