@@ -77,9 +77,6 @@ export const TopAlbums: React.FC = () => {
   
     
     <div className='mt-6 text-left'>
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-      Welcome to Spotiboxd!
-      </h1>
       {Object.keys(playlists).map((id, index) => (
         <div key={id} className="mt-4">
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">

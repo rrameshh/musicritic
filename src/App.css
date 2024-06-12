@@ -42,3 +42,18 @@
 .read-the-docs {
   color: #888;
 }
+
+
+.image-container {
+  display: flex;
+  flex-wrap: nowrap; /* prevent wrapping to next line */
+}
+
+.inline {
+  margin-right: 10px; /* add some space between images */
+}
+
+.inline img {
+  max-width: 150px; /* adjust the maximum width of the images */
+  max-height: 150px; /* adjust the maximum height of the images */
+}

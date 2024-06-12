@@ -13,12 +13,7 @@ import SpotifyAuthComponent from './authorization.tsx';
 export default function Root() {
 
   return (
-    <Container>
-      <Navbar />
       <SpotifyAuthComponent />
-
   
-    </Container>
-    
   );
 }

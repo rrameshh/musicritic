@@ -41,8 +41,11 @@ export function Log({ albumID, albumName }: LogProps) {
 
   const submitLog = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const temp = localStorage.getItem('userProfile');
+    const user = JSON.parse(temp);
+
     const newLog = {
-      profile: "Test",
+      profile: user.displayName,
       albumID: albumID,
       albumName: albumName,
       review: review,

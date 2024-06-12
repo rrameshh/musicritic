@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import { Container } from '@/components/ui/container.tsx';
+import { Navbar } from '@/components/ui/navbar.tsx';
 import UserTop from '@/components/ui/usertop.tsx';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx";
+import TopAlbums from './components/ui/topalbums.tsx';
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
 const redirectUrl = 'http://localhost:5173/'; // Your redirect URL - must be localhost URL and/or HTTPS
@@ -22,6 +25,7 @@ interface TokenResponse {
     expires_in: number;
 }
 
+
 const Authorization = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
@@ -30,41 +34,10 @@ const Authorization = () => {
     const [refreshToken, setRefreshToken] = useState<string | null>(null);
     const [expiresIn, setExpiresIn] = useState<number | null>(null);
     const [expires, setExpires] = useState<Date | null>(null);
+    const [redirectedFromSpotify, setRedirectedFromSpotify] = useState<boolean>(false);
 
-    // useEffect(() => {
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     const code = urlParams.get('code');
-    //     if (code) {
-    //         getToken(code);
-    //     } else {
-    //         checkTokenExpiry();
-    //     }
-    // }, []);
 
-//    useEffect(() => {
-//         const storedAccessToken = localStorage.getItem('access_token');
-//         const storedRefreshToken = localStorage.getItem('refresh_token');
-
-//         // if (storedAccessToken  && storedRefreshToken) {
-//         //     setAccessToken(storedAccessToken);
-//         //     setRefreshToken(storedRefreshToken);
-//         //     getUserData(storedAccessToken);
-//         //     // setIsLoggedIn(true);
-//         // } else {
-//             console.log("we gotta be here");
-//             const urlParams = new URLSearchParams(window.location.search);
-//             const code = urlParams.get('code');
-//             // setIsLoggedIn(true);
-//             if (code) {
-//                 getToken(code);
-//             }
-//             else {
-//                 checkTokenExpiry();
-//             }
-           
-//         //}
-//     }, []) ;
-
+    
 
 useEffect(() => {
     const storedAccessToken = localStorage.getItem('access_token');
@@ -73,17 +46,25 @@ useEffect(() => {
     if (storedAccessToken && storedRefreshToken) {
         setAccessToken(storedAccessToken);
         setRefreshToken(storedRefreshToken);
-        getUserData(storedAccessToken);
-    } else {
+        //getUserData(storedAccessToken);
+        
+    } 
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         if (code) {
             getToken(code);
+            setRedirectedFromSpotify(true);
         } else {
             setIsLoading(false);
         }
-    }
+    
+
 }, []);
+useEffect(() => {
+    if (redirectedFromSpotify) {
+        getUserData(accessToken); // Call getUserData only after redirect
+    }
+}, [redirectedFromSpotify]);
 
     async function getToken(code: string) {
         let codeVerifier = localStorage.getItem('code_verifier');
@@ -114,7 +95,6 @@ useEffect(() => {
             localStorage.setItem('refresh_token', data.refresh_token);
             getUserData(data.access_token);
             
-            
         }
     }
 
@@ -141,8 +121,10 @@ useEffect(() => {
             id: userData.id,
             pfp: userData.images[1]
         }
+        const profileString = JSON.stringify(profile);
+        localStorage.setItem('userProfile', profileString);
         setCurrentUser(profile);
-        setIsLoggedIn(true);
+        //setIsLoggedIn(true);
     }
 
     async function refreshTokens(refreshToken: string) {
@@ -168,6 +150,7 @@ useEffect(() => {
             setExpires(new Date(new Date().getTime() + (responseData.expires_in * 1000)));
             localStorage.setItem('refresh_token', responseData.refresh_token);
             localStorage.setItem('access_token', responseData.access_token);
+            //getUserData(responseData.access_token);
         } else {
             console.error("Error refreshing tokens:", responseData);
             // Handle error scenario
@@ -188,28 +171,17 @@ useEffect(() => {
             localStorage.setItem('access_token', tokenResponse.access_token);
             localStorage.setItem('refresh_token', tokenResponse.refresh_token);
             getUserData(tokenResponse.access_token);
-            setIsLoggedIn(true);
+            //setIsLoggedIn(true);
         }
         else
             console.log("refreshTokens did not do anything");
-        //     if (tokenResponse.access_token) {
-
-        //         console.log("Token refreshed successfully");
-        //     } else {
-        //         console.error("Failed to refresh access token");
-        //         // Handle failure scenario
-        //     }
-        //  else {
-        //     console.error("No refresh token available");
-        //     // Handle scenario where refresh token is not available
-        // }
     }
 
     const checkTokenExpiry = () => {
         const expiry = expires;
         if (expiry && new Date(expiry) > new Date()) {
-            setIsLoggedIn(true);
-            getUserData(localStorage.getItem('access_token')?.toString());
+            //setIsLoggedIn(true);
+            //getUserData(localStorage.getItem('access_token')?.toString());
         } else {
             // Token expired, refresh token
             // refreshTokenClick();
@@ -256,30 +228,36 @@ useEffect(() => {
     useEffect(() => {
         const expiry = expires;
         if (expiry && new Date(expiry) > new Date()) {
-            setIsLoggedIn(true);
             setIsLoading(false);
-            getUserData(accessToken);
+            if (redirectedFromSpotify) {
+                setIsLoggedIn(true);
+                getUserData(accessToken);
+            }
         } else {
-            handleTokenExpiration();
+            checkTokenExpiry();
         }
-    }, [expires]);
+    }, [expires, redirectedFromSpotify]);
 
-    if (isLoading) {
+    if (isLoading && !currentUser) {
         return <div>Loading...</div>;
     }
 
-    if (isLoggedIn && currentUser) {
+    if (isLoggedIn) {
         const curr = currentUser;
         if (curr != null) {
             return (
+                <Container>
+                    <Navbar />
                 <div className="inline flex flex-col items-center justify-center mt-4">
-                    <img className="rounded-full w-100 h-100" src={curr.pfp.url} alt={curr.displayName} />
+                    <img className="rounded-full w-22 h-22" src={curr.pfp.url} alt={curr.displayName} />
                     <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
                         Hello {curr.displayName}!
                     </h1>
-                    <Button onClick={logoutClick}> Logout </Button>
+                    <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
                     <UserTop />
+                    <TopAlbums/>
                 </div>
+                </Container>
             );
 
         }
