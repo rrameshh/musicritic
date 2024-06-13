@@ -27,6 +27,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["frontend/src", "backend/spotify.js"],
+  "include": ["frontend/src", "backend/spotify.js", "src/components/ui/navigation-menu.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

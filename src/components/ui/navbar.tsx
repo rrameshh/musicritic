@@ -1,26 +1,27 @@
-
-import {Container} from "@/components/ui/container.tsx"
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     NavigationMenu,
+    NavigationMenuList,
     NavigationMenuItem,
     NavigationMenuLink,
-    NavigationMenuList,
-    navigationMenuTriggerStyle,
-  } from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu.tsx"
 
 export function Navbar() {
     const navigate = useNavigate();
-    const location = useLocation();
 
     const navigateToHome = () => {
-        navigate('/');
+        const spotifyCode = localStorage.getItem('spotifyCode');
+        if (spotifyCode) {
+            navigate(`/?code=${spotifyCode}`);
+        } else {
+            navigate('/');
+        }
     }
 
     const navigateToSearch = () => {
-        if (location.pathname === '/results') {
-            console.log("Already on results page, no need to navigate again.");
-            // Optionally, you can perform some action here if you don't want to navigate again
+        const spotifyCode = localStorage.getItem('spotifyCode');
+        if (spotifyCode) {
+            navigate(`/results?code=${spotifyCode}`);
         } else {
             navigate('/results');
         }
@@ -28,22 +29,22 @@ export function Navbar() {
 
     return (
         // <Container>
-            <NavigationMenu>
-                <NavigationMenuList>
-                    <NavigationMenuItem>
-                        <NavigationMenuLink onClick={navigateToHome} className={navigationMenuTriggerStyle()}>
-                            Home
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <NavigationMenuLink onClick={navigateToSearch} className={navigationMenuTriggerStyle()}>
-                            Search for Albums
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-                </NavigationMenuList>
-            </NavigationMenu>
+        <NavigationMenu>
+            <NavigationMenuList>
+                <NavigationMenuItem>
+                    <NavigationMenuLink onClick={navigateToHome}>
+                        Home
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <NavigationMenuLink onClick={navigateToSearch}>
+                        Search for Albums
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+            </NavigationMenuList>
+        </NavigationMenu>
         // </Container>
     )
 }
 
-export default Navbar; // No need for {Navbar} here
+export default Navbar;

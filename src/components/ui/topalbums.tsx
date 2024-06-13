@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios, { AxiosResponse } from 'axios';
+import {Container} from "@/components/ui/container.tsx"
+
+
 
 import {
   Carousel,
@@ -29,8 +32,8 @@ interface Playlist {
 export const TopAlbums: React.FC = () => {
   const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const CLIENT_SECRET= import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
-  const playlistIds: string[] = ["37i9dQZEVXbKCOlAmDpukL", "12sDF4RTu8jG3ltTnqsDGZ"];
-  const Titles: string[] = ["My personal favs", "Today's Top Hits"];
+  const playlistIds: string[] = ["37i9dQZEVXbKCOlAmDpukL"];
+  const Titles: string[] = ["Today's Top Hits"];
   const [playlists, setPlaylists] = useState<{ [key: string]: Playlist }>({});
 
   useEffect(() => {
@@ -77,6 +80,7 @@ export const TopAlbums: React.FC = () => {
   
     
     <div className='mt-6 text-left'>
+      <Container>
       {Object.keys(playlists).map((id, index) => (
         <div key={id} className="mt-4">
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -84,9 +88,7 @@ export const TopAlbums: React.FC = () => {
           </h3>
           <Carousel
             key={id}
-            opts={{
-              align: "start",
-            }}
+     
             className="w-full max-w-l mt-3 mb-3"
           >
             <CarouselContent >
@@ -96,10 +98,10 @@ export const TopAlbums: React.FC = () => {
                 const albumImg: string = album ? album.images[0].url : 'Unknown';
 
                 return (
-                  <CarouselItem key={idx} className="md:basis-1/2 lg:basis-1/3 carousel-item border hover:border-primary">
+                  <CarouselItem key={idx} className="md:basis-1/3 lg:basis-1/4 carousel-item hover:border-primary">
                     <Link to={`/album/${album.id}`}>
                       {albumImg !== 'Unknown' ? (
-                        <img src={albumImg} alt={albumType} className="w-full h-full object-cover" />
+                        <img src={albumImg} alt={albumType} className="border-2 border-transparent hover:border-green-500" />
                       ) : (
                         <span className="text-xl font-semibold tracking-tight">No Image Available</span>
                       )}
@@ -111,8 +113,10 @@ export const TopAlbums: React.FC = () => {
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
+          
         </div>
       ))}
+      </Container>
     </div>
   );
 };

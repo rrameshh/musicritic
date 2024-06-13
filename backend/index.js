@@ -48,21 +48,27 @@ app.get("/song_reviews", (req, res)=>{
 })
 
 app.post("/song_reviews", (req, res) => {
-    const q = "INSERT INTO song_reviews(`profile`, `albumID`, `albumName`, `review`, `rating`, `date_listened`) VALUES (?)";
-    const values = [
-        req.body.profile,
-        req.body.albumID,
-        req.body.albumName,
-        req.body.review,
-        req.body.rating,
-        req.body.date_listened
-    ];
+    const { profile, albumID, albumName, review, rating, date_listened, profileID, profileIMG } = req.body;
+    
+    // Validate required fields
+    if (!profile || !albumID || !albumName || !review || !rating) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Additional data validation can be added here
+
+    const q = "INSERT INTO song_reviews(`profile`, `albumID`, `albumName`, `review`, `rating`, `date_listened`, `profileID`, `profileIMG`) VALUES (?)";
+    const values = [profile, albumID, albumName, review, rating, date_listened, profileID, profileIMG];
      
     db.query(q, [values], (err, data)=> { 
-        if (err) return res.json(err); 
-        return res.json("Song_review has been created succesfully");
-    })
-}) 
+        if (err) {
+            console.error("Error inserting song review:", err);
+            return res.status(500).json({ error: "Failed to create song review" });
+        }
+        return res.json("Song review has been created successfully");
+    });
+});
+
 
 
 app.get("/song_reviews/:albumId", (req, res) => {

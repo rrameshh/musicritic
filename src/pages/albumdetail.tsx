@@ -32,9 +32,13 @@ interface Album {
 
 interface Review {
     profile: string;
+    albumID: string;
+    albumName: string;
+    review: string
     rating: number;
-    date_listened: Date | null;
-    review: string;
+    date: Date | null;
+    profileID: string
+    profileIMG: string;
 }
 const handleClick = (index: number) => {
     // Logic to set the selected star
@@ -50,6 +54,7 @@ export const AlbumDetailPage = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
 
     useEffect(() => {
+        
         async function getAlbumInfo(id: string) {
             const baseUrl = "https://api.spotify.com/v1/albums/";
             const url = `${baseUrl}${id}`;
@@ -90,15 +95,17 @@ export const AlbumDetailPage = () => {
             try {
                 const response = await axios.get(`https://marked-boats-production.up.railway.app/song_reviews/${albumId}`);
                 setReviews(response.data);
+                console.log(reviews)
             } catch (error) {
                 console.log("Error fetching album reviews");
             }
         }
         if (album) {
             fetchAlbumReviews(album.id);
+            
         }
     }, [album]);
-
+    console.log(reviews)
     return (
         <div>
             <Container>
@@ -147,11 +154,18 @@ export const AlbumDetailPage = () => {
                                     {reviews.map((review, index) => (
                                         <li key={index}>
                                             <div className='mt-2 mb-2'>
+                                                <div className='inline'>
+                                                <img className="rounded-full w-10 h-10" src={review.profileIMG} alt={review.profile} />
+                                                <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
+                                                    {review.profileID}
+                                                </p>
+                                                
                                                 <Badge>{review.profile}</Badge>
                                                 <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
                                                     <Stars selectedStar={review.rating} setSelectedStar={handleClick} />
                                                 </p>
                                                 <p className="inline-block mr-2 text-sm text-muted-foreground"> {review.date_listened ? review.date_listened.toISOString() : 'N/A'}</p>
+                                                </div>
                                                 <p className="mt-2">{review.review}</p>
                                             </div>
                                         </li>

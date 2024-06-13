@@ -54,6 +54,7 @@ useEffect(() => {
         if (code) {
             getToken(code);
             setRedirectedFromSpotify(true);
+            localStorage.setItem('spotifyCode', code);
         } else {
             setIsLoading(false);
         }
@@ -94,6 +95,7 @@ useEffect(() => {
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('refresh_token', data.refresh_token);
             getUserData(data.access_token);
+
             
         }
     }
@@ -119,7 +121,7 @@ useEffect(() => {
         const profile = {
             displayName: userData.display_name,
             id: userData.id,
-            pfp: userData.images[1]
+            pfp: userData.images[0].url
         }
         const profileString = JSON.stringify(profile);
         localStorage.setItem('userProfile', profileString);
@@ -246,10 +248,10 @@ useEffect(() => {
         const curr = currentUser;
         if (curr != null) {
             return (
-                <Container>
+              <>
                     <Navbar />
                 <div className="inline flex flex-col items-center justify-center mt-4">
-                    <img className="rounded-full w-22 h-22" src={curr.pfp.url} alt={curr.displayName} />
+                    <img className="rounded-full w-22 h-22" src={curr.pfp} alt={curr.displayName} />
                     <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
                         Hello {curr.displayName}!
                     </h1>
@@ -257,7 +259,8 @@ useEffect(() => {
                     <UserTop />
                     <TopAlbums/>
                 </div>
-                </Container>
+                </>
+    
             );
 
         }

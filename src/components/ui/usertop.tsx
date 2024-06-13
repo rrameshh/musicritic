@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Container } from "@/components/ui/container.tsx"
 
 interface TopTrack {
   id: string;
   name: string;
   album: {
+    album_type: string;
     id: string;
     name: string;
     images: { url: string }[];
@@ -19,7 +22,7 @@ const UserTop: React.FC = () => {
     const getTopTracks = async () => {
       try {
         const response = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=5`,
+          `https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=20`,
           {
             method: "GET",
             headers: {
@@ -43,29 +46,6 @@ const UserTop: React.FC = () => {
       }
     };
 
-    const getRecommendations = async (trackIds: string[]) => {
-      try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/recommendations?limit=5&seed_tracks=${trackIds.join(',')}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("access_token"),
-            },
-          }
-        );
-        if (response.ok) {
-          const recData = await response.json();
-          setRecTracks(recData.tracks); // Assuming recommendations are in "tracks" property
-        } else {
-          console.error(
-            `Error fetching recommendations. Status code: ${response.status}`
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-      }
-    };
 
     getTopTracks();
 
@@ -73,36 +53,31 @@ const UserTop: React.FC = () => {
 
   return (
     <div className="mt-8">
-      <div className="mt-8 text-left">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          Your Top Songs
-        </h3>
-        <div className="image-container mt-8">
-          {userTracks.map((track) => (
-            <div key={track.id} className="inline">
-              <img src={track.album.images[1].url} alt={track.name} />
-              <p className="leading-7 [&:not(:first-child)]:mt-3 text-center">
-                {track.name}
-              </p>
-            </div>
-          ))}
+      <Container>
+        <div className="mt-8 text-left">
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+            Your Top Songs
+          </h3>
+          <Carousel className="w-full max-w-l mt-3 mb-3">
+            <CarouselContent>
+              {userTracks.map((track) => (
+                <CarouselItem key={track.id} className={`md:basis-1/3 lg:basis-1/4 hover:border-primary carousel-item ${track.album.album_type === "ALBUM" ? "album-type-album" : ""}`}>
+                  <a href={`/album/${track.album.id}`}>
+                    <img 
+                      src={track.album.images[1].url} 
+                      alt={track.name} 
+                      className="border-2 border-transparent hover:border-green-500"
+                    />
+                  </a>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
         </div>
-      </div>
-      <div className="mt-8 text-left">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          Your Next Listen
-        </h3>
-        <div className="image-container mt-8">
-          {recTracks.map((track) => (
-            <div key={track.id} className="inline">
-              <img src={track.album.images[1].url} alt={track.name} />
-              <p className="leading-7 [&:not(:first-child)]:mt-3 text-center">
-                {track.name}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* Add your code for recommended tracks here */}
+      </Container>
     </div>
   );
 };

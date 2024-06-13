@@ -51,6 +51,8 @@ export function Log({ albumID, albumName }: LogProps) {
       review: review,
       rating: clickedStar,
       date: date,
+      profileID: user.id,
+      profileIMG: user.pfp 
     };
     console.log(newLog);
     try {
