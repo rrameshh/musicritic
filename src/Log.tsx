@@ -21,7 +21,7 @@ interface LogProps {
   albumName: string;
 }
 
-export function Log({ albumID, albumName }: LogProps) {
+export function Log({ albumID, albumName, onLogSubmitted }: LogProps) {
   const [clickedStar, setClickedStar] = useState<number>(1);
   const [review, setReview] = useState<string>("");
   const [title, setTitle] = useState<string>("");

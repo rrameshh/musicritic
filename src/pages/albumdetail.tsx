@@ -88,24 +88,30 @@ export const AlbumDetailPage = () => {
             }
         }
         getAlbumInfo(defaultId);
-    }, [id]);
+    }, [defaultId]);
 
     useEffect(() => {
         async function fetchAlbumReviews(albumId: string) {
             try {
                 const response = await axios.get(`https://marked-boats-production.up.railway.app/song_reviews/${albumId}`);
                 setReviews(response.data);
-                console.log(reviews)
             } catch (error) {
-                console.log("Error fetching album reviews");
+                console.error("Error fetching album reviews:", error);
             }
         }
         if (album) {
+            console.log("Fetching reviews...");
             fetchAlbumReviews(album.id);
+            // Optionally, you can setup a polling mechanism using setInterval
+            const intervalId = setInterval(() => {
+                console.log("Fetching reviews...");
+                fetchAlbumReviews(album.id);
+            }, 1000); // Fetch reviews every 5 seconds
+            return () => clearInterval(intervalId); // Cleanup function to clear interval on component unmount
             
         }
     }, [album]);
-    console.log(reviews)
+ 
     return (
         <div>
              <Navbar />
@@ -156,11 +162,6 @@ export const AlbumDetailPage = () => {
                                         <li key={index}>
                                             <div className='mt-2 mb-2'>
                                                 <div className='inline'>
-                                                {/* <img className="rounded-full w-10 h-10" src={review.profileIMG} alt={review.profile} />
-                                                <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
-                                                    {review.profileID}
-                                                </p> */}
-                                                
                                                 <Badge>{review.profile}</Badge>
                                                 <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
                                                     <Stars selectedStar={review.rating} setSelectedStar={handleClick} />
