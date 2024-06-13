@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx"
 import TopAlbums from './components/ui/topalbums.tsx';
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-const redirectUrl = `https://spotiboxd.netlify.app/`; 
+const redirectUrl = `https://musicriticer.netlify.app/`; 
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
