@@ -5,6 +5,7 @@ import { Navbar } from '@/components/ui/navbar.tsx';
 import UserTop from '@/components/ui/usertop.tsx';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx";
 import TopAlbums from './components/ui/topalbums.tsx';
+import Guest from './components/ui/guest.tsx';
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
@@ -281,10 +282,11 @@ useEffect(() => {
                     </h1>
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                         Note: due to rate limiting restrictions, you will only be able to access this app if you are an approved user
-                     </h3>
-                    
+                     </h3>                    
                 <Button onClick={redirectToSpotifyAuthorize}> Login </Button>
-            </>
+                <Guest />
+                </>
+            
             
         )
     }

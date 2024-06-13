@@ -6,6 +6,7 @@ import Searchbar from './pages/searchbar.tsx'
 import NotFoundPage from './pages/notfound.tsx'
 import './index.css'
 import AlbumDetailPage from './pages/albumdetail.tsx'
+import Guesthome from './pages/guesthome.tsx'
 
 
 
@@ -21,7 +22,12 @@ const router = createBrowserRouter([{
 {
   path: "/album/:id", 
   element: <AlbumDetailPage/>
+},
+{
+  path:"guest-home",
+  element: <Guesthome/>
 }
+
 ]);
 // import dotenv from 'dotenv';
 // dotenv.config();

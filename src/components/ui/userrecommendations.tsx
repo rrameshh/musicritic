@@ -21,40 +21,50 @@ interface TopTrack {
 }
 
 const UserRecommendations: React.FC<{ trackIds: TopTrack[] }> = ({ trackIds }) => {
-  const [loading, setLoading] = useState<boolean>(true); // State variable to track loading
-  const [userReccs, setUserReccs] = useState<TopTrack[]>([]);
-  const firstFiveTrackIds = trackIds.slice(0, 5);
-  const seedTracksParam = firstFiveTrackIds.map(track => track.id).join(',').toString();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userReccs, setUserReccs] = useState<TopTrack[]>(() => {
+    // Retrieve recommendations from localStorage if available
+    const storedReccs = localStorage.getItem("userReccs");
+    return storedReccs ? JSON.parse(storedReccs) : [];
+  });
 
   useEffect(() => {
-    const getRecommendations = async () => {
-      try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/recommendations?limit=20&seed_tracks=${seedTracksParam}`, 
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("access_token"),
-            },
-          }
-        );
-        if (response.ok) {
-          const reccData = await response.json();
-          setUserReccs(reccData.tracks);
-        } else {
-          console.error(
-            `Error fetching track info. Status code: ${response.status}`
+    if (userReccs.length === 0) {
+      const firstFiveTrackIds = trackIds.slice(0, 5);
+      const seedTracksParam = firstFiveTrackIds.map(track => track.id).join(',').toString();
+
+      const getRecommendations = async () => {
+        try {
+          const response = await fetch(
+            `https://api.spotify.com/v1/recommendations?limit=20&seed_tracks=${seedTracksParam}`, 
+            {
+              method: "GET",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("access_token"),
+              },
+            }
           );
+          if (response.ok) {
+            const reccData = await response.json();
+            setUserReccs(reccData.tracks);
+            localStorage.setItem("userReccs", JSON.stringify(reccData.tracks)); // Store recommendations in localStorage
+          } else {
+            console.error(
+              `Error fetching track info. Status code: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching top tracks:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching top tracks:", error);
-      } finally {
-        setLoading(false); // Set loading to false when request completes
-      }
-    };
-  
-    getRecommendations();
-  }, [seedTracksParam]); // Include seedTracksParam as a dependency
+      };
+    
+      getRecommendations();
+    } else {
+      setLoading(false); // Recommendations already fetched from localStorage
+    }
+  }, [trackIds, userReccs]);
 
   return (
     <div className="mt-8">
@@ -63,7 +73,7 @@ const UserRecommendations: React.FC<{ trackIds: TopTrack[] }> = ({ trackIds }) =
           <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Recommended Tracks
           </h3>
-          {loading ? ( // Render loading section if loading is true
+          {loading ? (
             <p>Loading...</p>
           ) : (
             <Carousel className="w-full max-w-l mt-8 mb-3">

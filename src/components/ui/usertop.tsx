@@ -78,7 +78,7 @@ const UserTop: React.FC = () => {
           </Carousel>
         </div>
         {/* Add your code for recommended tracks here */}
-        <UserRecommendations trackIds={userTracks}/>
+        {/* <UserRecommendations trackIds={userTracks}/> */}
       </Container>
     </div>
   );
