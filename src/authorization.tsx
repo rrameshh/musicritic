@@ -6,8 +6,10 @@ import UserTop from '@/components/ui/usertop.tsx';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx";
 import TopAlbums from './components/ui/topalbums.tsx';
 
+
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-const redirectUrl = `https://musicriticer.netlify.app/`; 
+// const redirectUrl = `https://musicriticer.netlify.app/`; 
+const redirectUrl = `http://localhost:5173/`
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -258,6 +260,7 @@ useEffect(() => {
                     <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
                     <UserTop />
                     <TopAlbums/>
+                    
                 </div>
                 </>
     
@@ -279,6 +282,7 @@ useEffect(() => {
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                         Note: due to rate limiting restrictions, you will only be able to access this app if you are an approved user
                      </h3>
+                    
                 <Button onClick={redirectToSpotifyAuthorize}> Login </Button>
             </>
             

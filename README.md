@@ -8,6 +8,8 @@ Musicritic is a web application inspired by Letterboxd, but with Spotify integra
 - **Rating & Reviews**: Users can rate and review movies.
 - **Spotify Integration**: Discover music related to your movie preferences through Spotify API.
 
+
+
 ## Technologies Used
 
 ### Frontend

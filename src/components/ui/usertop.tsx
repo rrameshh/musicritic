@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Container } from "@/components/ui/container.tsx"
+import UserRecommendations from '@/components/ui/userrecommendations.tsx'; 
 
 interface TopTrack {
   id: string;
@@ -33,9 +34,9 @@ const UserTop: React.FC = () => {
         if (response.ok) {
           const trackData = await response.json();
           setUserTracks(trackData.items);
-          const ids = trackData.items.map((track) => track.id);
-          setTrackIds(ids);
-          getRecommendations(ids); // Call getRecommendations after user tracks are fetched
+          // const ids = trackData.items.map((track) => track.id);
+          // setTrackIds(ids);
+          // getRecommendations(ids); // Call getRecommendations after user tracks are fetched
         } else {
           console.error(
             `Error fetching playlist info. Status code: ${response.status}`
@@ -77,6 +78,7 @@ const UserTop: React.FC = () => {
           </Carousel>
         </div>
         {/* Add your code for recommended tracks here */}
+        <UserRecommendations trackIds={userTracks}/>
       </Container>
     </div>
   );
