@@ -9,8 +9,8 @@ import Guest from './components/ui/guest.tsx';
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-// const redirectUrl = `https://musicriticer.netlify.app/`; 
-const redirectUrl = `http://localhost:5173/`
+const redirectUrl = `https://musicriticer.netlify.app/`; 
+// const redirectUrl = `http://localhost:5173/`
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";

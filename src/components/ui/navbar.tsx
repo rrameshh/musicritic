@@ -12,7 +12,7 @@ export function Navbar() {
         const isGuest = userProfile && JSON.parse(userProfile).id === "guest";
         
         if (spotifyCode) {
-            navigate(`/`);
+            navigate(`/?code=${spotifyCode}`);
         } else {
             if (isGuest) {
                 navigate('/guest-home');
