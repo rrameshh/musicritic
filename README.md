@@ -1,4 +1,4 @@
-# Musicritic
+# Musicritic (formerly spotiboxd)
 
 Musicritic is a web application inspired by Letterboxd, but with Spotify integration. Users can review and rate songs, create watchlists, and discover new music based on their preferences through the Spotify API. Authorization is done with OAuth and PKCE
 
