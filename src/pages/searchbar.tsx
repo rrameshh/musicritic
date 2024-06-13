@@ -91,7 +91,7 @@ export function Searchbar() {
   return (
     // <Router>
     <>
-      <Container>
+
         <Navbar />
         <div className="items-center justify-end" style={{ paddingTop: '20px' }}>
           <Input
@@ -105,7 +105,7 @@ export function Searchbar() {
         <body>
           <AlbumCovers albums={albums} searchInput={searchInput} />
         </body>
-      </Container>
+
     </>
     // </Router>
   );

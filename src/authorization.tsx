@@ -121,7 +121,7 @@ useEffect(() => {
         const profile = {
             displayName: userData.display_name,
             id: userData.id,
-            pfp: userData.images[0].url
+            pfp: userData.images[1].url
         }
         const profileString = JSON.stringify(profile);
         localStorage.setItem('userProfile', profileString);

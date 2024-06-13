@@ -108,8 +108,9 @@ export const AlbumDetailPage = () => {
     console.log(reviews)
     return (
         <div>
+             <Navbar />
             <Container>
-                <Navbar />
+               
                 {album && (
                     <div className="flex-container mt-6">
                         <div className="one">
@@ -155,10 +156,10 @@ export const AlbumDetailPage = () => {
                                         <li key={index}>
                                             <div className='mt-2 mb-2'>
                                                 <div className='inline'>
-                                                <img className="rounded-full w-10 h-10" src={review.profileIMG} alt={review.profile} />
+                                                {/* <img className="rounded-full w-10 h-10" src={review.profileIMG} alt={review.profile} />
                                                 <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">
                                                     {review.profileID}
-                                                </p>
+                                                </p> */}
                                                 
                                                 <Badge>{review.profile}</Badge>
                                                 <p className="inline-block ml-2 mr-2 text-sm text-muted-foreground">

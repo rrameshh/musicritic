@@ -48,10 +48,10 @@ app.get("/song_reviews", (req, res)=>{
 })
 
 app.post("/song_reviews", (req, res) => {
-    const { profile, albumID, albumName, review, rating, date_listened, profileID, profileIMG } = req.body;
+    const { profile, albumID, albumName, review, rating, date_listened, profileID, profileIMG } = req.body;//, profileID, profileIMG } = req.body;
     
     // Validate required fields
-    if (!profile || !albumID || !albumName || !review || !rating) {
+    if (!profile || !albumID || !albumName || !review || !rating || !profileID || !profileIMG) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -65,7 +65,9 @@ app.post("/song_reviews", (req, res) => {
             console.error("Error inserting song review:", err);
             return res.status(500).json({ error: "Failed to create song review" });
         }
-        return res.json("Song review has been created successfully");
+        console.log(values[6]);
+        console.log(values[7]);
+        return res.json(values[6] + values[7] + "Song review has been created successfully");
     });
 });
 

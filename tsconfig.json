@@ -9,7 +9,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "frontend/src/*"
+        "src/*"
       ]
     },
 
@@ -27,6 +27,6 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["frontend/src", "backend/spotify.js", "src/components/ui/navigation-menu.tsx"],
+  "include": ["backend/spotify.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

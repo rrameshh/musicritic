@@ -43,6 +43,7 @@ export function Log({ albumID, albumName }: LogProps) {
     e.preventDefault();
     const temp = localStorage.getItem('userProfile');
     const user = JSON.parse(temp);
+    console.log(user)
 
     const newLog = {
       profile: user.displayName,
