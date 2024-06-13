@@ -121,14 +121,17 @@ useEffect(() => {
         }
 
         const userData = await response.json();
+        console.log("user??")
+        console.log(userData);
         const profile = {
             displayName: userData.display_name,
             id: userData.id,
-            pfp: userData.images[1].url
+            pfp: userData.images && userData.images.length > 1 ? userData.images[1].url : ''
         }
         const profileString = JSON.stringify(profile);
         localStorage.setItem('userProfile', profileString);
         setCurrentUser(profile);
+    
         //setIsLoggedIn(true);
     }
 
