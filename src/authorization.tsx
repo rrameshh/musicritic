@@ -6,6 +6,7 @@ import UserTop from '@/components/ui/usertop.tsx';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx";
 import TopAlbums from './components/ui/topalbums.tsx';
 import Guest from './components/ui/guest.tsx';
+import { access } from 'fs';
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
@@ -14,7 +15,7 @@ const redirectUrl = `https://musicriticer.netlify.app/`;
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
-const scope = 'user-read-private user-read-email';
+const scope = 'user-read-private user-read-email user-top-read';
 
 interface UserProfile {
     displayName: string;
@@ -231,6 +232,7 @@ useEffect(() => {
     const logoutClick = () => {
         localStorage.clear();
         window.location.href = redirectUrl;
+        localStorage.setItem('userProfile', "null");
     }
 
     useEffect(() => {
