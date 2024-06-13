@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar.tsx"
 import TopAlbums from './components/ui/topalbums.tsx';
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-const redirectUrl = 'https://spotiboxd.netlify.app/'; // Your redirect URL - must be localhost URL and/or HTTPS
+const redirectUrl = `https://spotiboxd.netlify.app/`; 
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -274,8 +274,11 @@ useEffect(() => {
         return (
             <>
                 <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
-                        Welcome to Spotiboxd!
+                        Welcome to Musicritic!
                     </h1>
+                    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                        Note: due to rate limiting restrictions, you will only be able to access this app if you are an approved user
+                     </h3>
                 <Button onClick={redirectToSpotifyAuthorize}> Login </Button>
             </>
             
