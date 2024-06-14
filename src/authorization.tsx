@@ -109,6 +109,7 @@ const Authorization = () => {
     }
 
     async function getUserData(storedAccessToken) {
+        localStorage.setItem("access_token", storedAccessToken);
         const response = await fetch("https://api.spotify.com/v1/me", {
             method: 'GET',
             headers: { 'Authorization': 'Bearer ' + storedAccessToken },
@@ -134,7 +135,8 @@ const Authorization = () => {
         const profile = {
             displayName: userData.display_name,
             id: userData.id,
-            pfp: userData.images && userData.images.length > 1 ? userData.images[1].url : ''
+            pfp: userData.images && userData.images.length > 1 ? userData.images[1].url : '',
+            access_token: localStorage.getItem('access_token'),
         }
         const profileString = JSON.stringify(profile);
         localStorage.removeItem('userProfile');
