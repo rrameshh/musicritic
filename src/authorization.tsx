@@ -15,6 +15,7 @@ const redirectUrl = `https://musicriticer.netlify.app/`;
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
+
 const scope = 'user-read-private user-read-email user-top-read';
 
 interface UserProfile {
@@ -270,7 +271,6 @@ const Authorization = () => {
         // sessionStorage.setItem('loggedIn', 'false');
         localStorage.setItem('loggedIn', "false");
         window.location.href = redirectUrl;
-
     }
 
     useEffect(() => {
