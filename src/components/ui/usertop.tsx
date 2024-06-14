@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Container } from "@/components/ui/container.tsx"
 import UserRecommendations from '@/components/ui/userrecommendations.tsx'; 
+import { access } from "fs";
 
 interface TopTrack {
   id: string;
@@ -21,36 +22,42 @@ const UserTop: React.FC<UserTopProps> = ({ accessToken }) => {
   const [userTracks, setUserTracks] = useState<TopTrack[]>([]);
   const [recTracks, setRecTracks] = useState<TopTrack[]>([]);
   const [trackIds, setTrackIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    const getTopTracks = async () => {
-      try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=20`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + accessToken, // Use accessToken from props
-            },
-          }
-        );
-        if (response.ok) {
-          const trackData = await response.json();
-          setUserTracks(trackData.items);
-        } else {
-          console.error(
-            `Error fetching playlist info. Status code: ${response.status}`
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching top tracks:", error);
-      }
-    };
   
-    getTopTracks();
-  }, [accessToken]); // Add accessToken to dependency array
+  useEffect(() => {
+    let isMounted = true; // Add a flag to track if the component is mounted
+  const getTopTracks = async () => {
+    try {
+      const response = await fetch(
+        `https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=20`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + accessToken, // Use accessToken from props
+          },
+        }
+      );
+      console.log("here")
+      if (response.ok) {
+        const trackData = await response.json();
+        setUserTracks(trackData.items);
+      } else {
+        console.error(
+          `Error fetching playlist info. Status code: ${response.status}`
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching top tracks:", error);
+    }
+  };
+
+  getTopTracks();
+  return () => {
+    isMounted = false; // Set the flag to false when the component unmounts
+  };
+}, [accessToken]); // Add accessToken to dependency array 
 
   return (
+
     <div className="mt-8">
       <Container>
         <div className="mt-8 text-left">

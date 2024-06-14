@@ -10,12 +10,12 @@ import { access } from 'fs';
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-// const redirectUrl = `https://musicriticer.netlify.app/`; 
-const redirectUrl = `http://localhost:5173/`
+const redirectUrl = `https://musicriticer.netlify.app/`; 
+// const redirectUrl = `http://localhost:5173/`
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
-const scope = 'user-read-private user-read-email';
+const scope = 'user-read-private user-read-email user-top-read';
 
 interface UserProfile {
     displayName: string;
@@ -31,7 +31,9 @@ interface TokenResponse {
 }
 
 
+
 const Authorization = () => {
+    
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -40,7 +42,9 @@ const Authorization = () => {
     const [expiresIn, setExpiresIn] = useState<number | null>(null);
     const [expires, setExpires] = useState<Date | null>(null);
     const [redirectedFromSpotify, setRedirectedFromSpotify] = useState<boolean>(false);
+    // const [topRendered, setTopRendered] = useState<boolean>(false);
 
+    
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -52,7 +56,16 @@ const Authorization = () => {
         } else {
             setIsLoading(false);
         }
+     
     }, []);
+
+    // const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    //     event.preventDefault();
+    //     // logoutClick();
+
+
+    //     event.returnValue = ''; // For Chrome
+    // };
     
     useEffect(() => {
         if (redirectedFromSpotify) {
@@ -140,11 +153,16 @@ const Authorization = () => {
         }
         const profileString = JSON.stringify(profile);
         localStorage.removeItem('userProfile');
-
+        localStorage.setItem('AT', profile.access_token);
         localStorage.setItem('userProfile', profileString);
         console.log(profileString)
         setCurrentUser(profile);
-        sessionStorage.setItem('loggedIn', 'true');
+        // sessionStorage.setItem('loggedIn', 'true');
+        localStorage.setItem('loggedIn', "true");
+
+       
+
+
         //const isuserIn = sessionStorage.getItem('userIn') === 'true';
     
         //setIsLoggedIn(true);
@@ -167,7 +185,7 @@ const Authorization = () => {
         console.log(responseData);
     
         if (responseData && responseData.access_token && responseData.refresh_token) {
-            setAccessToken(responseData.access_token);
+            //setAccessToken(responseData.access_token);
             setRefreshToken(responseData.refresh_token);
             setExpiresIn(responseData.expires_in);
             setExpires(new Date(new Date().getTime() + (responseData.expires_in * 1000)));
@@ -249,7 +267,8 @@ const Authorization = () => {
 
     const logoutClick = () => {
         localStorage.clear();
-        sessionStorage.setItem('loggedIn', 'false');
+        // sessionStorage.setItem('loggedIn', 'false');
+        localStorage.setItem('loggedIn', "false");
         window.location.href = redirectUrl;
 
     }
@@ -260,7 +279,9 @@ const Authorization = () => {
             setIsLoading(false);
             if (redirectedFromSpotify) {
                 setIsLoggedIn(true);
-                sessionStorage.setItem('userIn', "true");
+                // sessionStorage.setItem('userIn', "true");
+                localStorage.setItem('userIn', "true");
+
                 // getUserData(accessToken);
             }
         } else {
@@ -272,26 +293,31 @@ const Authorization = () => {
     if (isLoading && !currentUser) {
         return <div>Loading...</div>;
     }
-    const session = (sessionStorage.getItem('userIn') === 'true');
+    // const session = (sessionStorage.getItem('userIn') === 'true');
+    const session = (localStorage.getItem('loggedIn') === 'true');
+  
 
     if (session && isLoggedIn) {
         const curr = currentUser;
         if (curr != null) {
             return (
-              <>
-                    <Navbar />
+              <div>
+                <Navbar />
                 <div className="inline flex flex-col items-center justify-center mt-4">
                     <img className="rounded-full w-22 h-22" src={curr.pfp} alt={curr.displayName} />
                     <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
                         Hello {curr.displayName}!
                     </h1>
                     <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
+                    {/* {currentUser && <UserTop accessToken={accessToken} />} */}
+
+
                     {currentUser && <UserTop accessToken={accessToken} />}
 
-                    {/* <TopAlbums/> */}
+                    <TopAlbums/>
                     
                 </div>
-                </>
+                </div>
     
             );
 
@@ -303,6 +329,7 @@ const Authorization = () => {
         }
     }
     else {
+     
         return (
             <>
                 <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
@@ -316,7 +343,7 @@ const Authorization = () => {
                 </>
             
             
-        )
+        );
     }
 }
 
