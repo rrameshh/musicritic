@@ -13,8 +13,11 @@ interface TopTrack {
     images: { url: string }[];
   };
 }
+interface UserTopProps {
+  accessToken: string; // Add accessToken as a prop
+}
 
-const UserTop: React.FC = () => {
+const UserTop: React.FC<UserTopProps> = ({ accessToken }) => {
   const [userTracks, setUserTracks] = useState<TopTrack[]>([]);
   const [recTracks, setRecTracks] = useState<TopTrack[]>([]);
   const [trackIds, setTrackIds] = useState<string[]>([]);
@@ -27,16 +30,13 @@ const UserTop: React.FC = () => {
           {
             method: "GET",
             headers: {
-              Authorization: "Bearer " + localStorage.getItem("access_token"),
+              Authorization: "Bearer " + accessToken, // Use accessToken from props
             },
           }
         );
         if (response.ok) {
           const trackData = await response.json();
           setUserTracks(trackData.items);
-          // const ids = trackData.items.map((track) => track.id);
-          // setTrackIds(ids);
-          // getRecommendations(ids); // Call getRecommendations after user tracks are fetched
         } else {
           console.error(
             `Error fetching playlist info. Status code: ${response.status}`
@@ -46,11 +46,9 @@ const UserTop: React.FC = () => {
         console.error("Error fetching top tracks:", error);
       }
     };
-
-
+  
     getTopTracks();
-
-  }, []);
+  }, [accessToken]); // Add accessToken to dependency array
 
   return (
     <div className="mt-8">
