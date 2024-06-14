@@ -154,7 +154,6 @@ const Authorization = () => {
         }
         const profileString = JSON.stringify(profile);
         localStorage.removeItem('userProfile');
-        localStorage.setItem('AT', profile.access_token);
         localStorage.setItem('userProfile', profileString);
         console.log(profileString)
         setCurrentUser(profile);
