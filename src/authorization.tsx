@@ -12,7 +12,7 @@ import SpotPlayer from '@/components/ui/webplayer.tsx'
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-const redirectUrl = `https://musicriticer.netlify.app/`; 
+const redirectUrl = `https://musicriticer.netlify.app/`;
 // const redirectUrl = `http://localhost:5173/`
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
@@ -24,7 +24,7 @@ interface UserProfile {
     displayName: string;
     id: string;
     pfp: string;
-    access_token:string;
+    access_token: string;
 }
 
 interface TokenResponse {
@@ -36,7 +36,7 @@ interface TokenResponse {
 
 
 const Authorization = () => {
-    
+
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -47,7 +47,7 @@ const Authorization = () => {
     const [redirectedFromSpotify, setRedirectedFromSpotify] = useState<boolean>(false);
     // const [topRendered, setTopRendered] = useState<boolean>(false);
 
-    
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -59,7 +59,7 @@ const Authorization = () => {
         } else {
             setIsLoading(false);
         }
-     
+
     }, []);
 
     // const handleBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -69,26 +69,26 @@ const Authorization = () => {
 
     //     event.returnValue = ''; // For Chrome
     // };
-    
+
     useEffect(() => {
         if (redirectedFromSpotify) {
             const storedAccessToken = localStorage.getItem('access_token');
-            
+
             // Check if user data has already been fetched
             const userProfileData = localStorage.getItem('userProfile');
             console.log(userProfileData)
-            
-            
+
+
             if (!userProfileData) {
 
                 // If user data not found, fetch it
                 getUserData(storedAccessToken);
                 localStorage.setItem("correct_token", storedAccessToken);
-                
+
             } else {
                 // If user data already exists, set currentUser state
                 setCurrentUser(JSON.parse(userProfileData));
-                
+
                 setIsLoggedIn(true);
                 setIsLoading(false);
             }
@@ -124,7 +124,7 @@ const Authorization = () => {
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('refresh_token', data.refresh_token);
             getUserData(data.access_token);
-            
+
         }
     }
 
@@ -166,7 +166,7 @@ const Authorization = () => {
         // sessionStorage.setItem('loggedIn', 'true');
         localStorage.setItem('loggedIn', "true");
         //const isuserIn = sessionStorage.getItem('userIn') === 'true';
-    
+
         //setIsLoggedIn(true);
     }
 
@@ -185,7 +185,7 @@ const Authorization = () => {
         const response = await fetch(tokenEndpoint, payload);
         const responseData = await response.json();
         console.log(responseData);
-    
+
         if (responseData && responseData.access_token && responseData.refresh_token) {
             //setAccessToken(responseData.access_token);
             setRefreshToken(responseData.refresh_token);
@@ -200,15 +200,15 @@ const Authorization = () => {
             console.error("Error refreshing tokens:", responseData);
             // Handle error scenario
         }
-    
+
         return responseData;
     }
-    
+
 
     async function handleTokenExpiration() {
 
         const tokenResponse = await refreshTokens(localStorage.getItem('refresh_token')?.toString());
-        
+
         if (tokenResponse.access_token && tokenResponse.refresh_token) {
             console.log("something workeds?");
             console.log(tokenResponse.access_token);
@@ -289,33 +289,33 @@ const Authorization = () => {
             checkTokenExpiry();
         }
     }, [expires, redirectedFromSpotify]);
-    
+
 
     if (isLoading && !currentUser) {
         return <div>Loading...</div>;
     }
     // const session = (sessionStorage.getItem('userIn') === 'true');
     const session = (localStorage.getItem('loggedIn') === 'true');
-  
+
 
     if (session && isLoggedIn) {
         const curr = currentUser;
         if (curr != null) {
             return (
-              <div>
-                <Navbar />
-                   <div className="inline flex flex-col items-center justify-center mt-4">
-                    <img className="rounded-full w-22 h-22" src={curr.pfp} alt={curr.displayName} />
-                    <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
-                        Hello {curr.displayName}!
-                    </h1>
-                    <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
-                    {currentUser && <UserTop accessToken={accessToken} />}
-                    <TopAlbums/>
-                </div> 
-        
+                <div>
+                    <Navbar />
+                    <div className="inline flex flex-col items-center justify-center mt-4">
+                        <img className="rounded-full w-22 h-22" src={curr.pfp} alt={curr.displayName} />
+                        <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
+                            Hello {curr.displayName}!
+                        </h1>
+                        <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
+                        {currentUser && <UserTop accessToken={accessToken} />}
+                        <TopAlbums />
+                    </div>
+
                 </div>
-    
+
             );
 
         }
@@ -326,20 +326,18 @@ const Authorization = () => {
         }
     }
     else {
-     
+
         return (
-            <>
-                <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
-                        Welcome to Musicritic!
-                    </h1>
-                    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                        Note: due to rate limiting restrictions, you will only be able to access this app if you are an approved user
-                     </h3>                    
-                <Button onClick={redirectToSpotifyAuthorize}> Login </Button>
-                <Guest />
-                </>
-            
-            
+            <div className="text-center">
+            <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight mt-3 mb-3">Welcome to Musicritic!</h1>
+            <h3 className="text-2xl font-semibold tracking-tight mt-2 mb-2">Note: due to rate limiting restrictions, you will only be able to access this app if you are an approved user</h3>
+            <h3 className="text-2xl font-semibold tracking-tight mt-2 mb-2">Music Player Functionality is only available to Spotify Premium Users</h3>
+            <div className="mb-4">
+              <Button onClick={redirectToSpotifyAuthorize}>Login</Button>
+            </div>
+            <Guest />
+          </div>
+
         );
     }
 }
