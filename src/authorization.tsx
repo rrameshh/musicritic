@@ -74,8 +74,12 @@ const Authorization = () => {
             
             // Check if user data has already been fetched
             const userProfileData = localStorage.getItem('userProfile');
+            console.log(userProfileData)
             
-            if (!userProfileData) {
+            
+            if (!userProfileData || (JSON.parse(userProfileData).id == "guest")) {
+
+                
                 // If user data not found, fetch it
                 getUserData(storedAccessToken);
                 
@@ -159,10 +163,6 @@ const Authorization = () => {
         setCurrentUser(profile);
         // sessionStorage.setItem('loggedIn', 'true');
         localStorage.setItem('loggedIn', "true");
-
-       
-
-
         //const isuserIn = sessionStorage.getItem('userIn') === 'true';
     
         //setIsLoggedIn(true);

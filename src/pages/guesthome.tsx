@@ -3,6 +3,8 @@ import TopAlbums from '@/components/ui/topalbums.tsx';
 import Navbar from '@/components/ui/navbar.tsx';
 
  export const GuestHome = () =>  {
+
+
      
     return (
          <div className="mt-8">
