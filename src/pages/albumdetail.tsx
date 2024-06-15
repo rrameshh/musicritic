@@ -13,6 +13,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import axios from 'axios';
+import SpotPlayer from '@/components/ui/webplayer.tsx'
 
 
 
@@ -28,6 +29,7 @@ interface Album {
     release_date: string;
     genres: string[];
     popularity: number;
+    uri: string;
 }
 
 interface Review {
@@ -52,6 +54,8 @@ export const AlbumDetailPage = () => {
     const defaultId = id || 'default_value';
     const [album, setAlbum] = useState<Album | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const accessToken = localStorage.getItem('access_token');
+    const [albumUri, setAlbumUri] = useState<string | null>(null);
 
     useEffect(() => {
         
@@ -80,6 +84,7 @@ export const AlbumDetailPage = () => {
                 if (response.status === 200) {
                     const albumData: Album = response.data;
                     setAlbum(albumData);
+                    setAlbumUri(albumData.uri);
                 } else {
                     console.error(`Error fetching album info. Status code: ${response.status}`);
                 }
@@ -179,7 +184,12 @@ export const AlbumDetailPage = () => {
                         </div>
                     </div>
                 )}
+             
+                <SpotPlayer accessToken = {accessToken} trackUri = {albumUri}/>                    
+   
+                
             </Container>
+            
         </div>
     );
 }

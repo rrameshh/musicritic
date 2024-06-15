@@ -8,6 +8,8 @@ import TopAlbums from './components/ui/topalbums.tsx';
 import Guest from './components/ui/guest.tsx';
 import { access } from 'fs';
 
+import SpotPlayer from '@/components/ui/webplayer.tsx'
+
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
 // const redirectUrl = `https://musicriticer.netlify.app/`; 
@@ -16,7 +18,7 @@ const redirectUrl = `http://localhost:5173/`
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
 
-const scope = 'user-read-private user-read-email user-top-read';
+const scope = 'user-read-private user-read-email user-top-read streaming ';
 
 interface UserProfile {
     displayName: string;
@@ -301,20 +303,16 @@ const Authorization = () => {
             return (
               <div>
                 <Navbar />
-                <div className="inline flex flex-col items-center justify-center mt-4">
+                   <div className="inline flex flex-col items-center justify-center mt-4">
                     <img className="rounded-full w-22 h-22" src={curr.pfp} alt={curr.displayName} />
                     <h1 className="scroll-m-20 text-4xl mt-3 mb-3 font-extrabold tracking-tight lg:text-5xl">
                         Hello {curr.displayName}!
                     </h1>
                     <Button onClick={logoutClick} className="rounded-lg"> Logout </Button>
-                    {/* {currentUser && <UserTop accessToken={accessToken} />} */}
-
-
                     {currentUser && <UserTop accessToken={accessToken} />}
-
                     <TopAlbums/>
-                    
-                </div>
+                </div> 
+        
                 </div>
     
             );
