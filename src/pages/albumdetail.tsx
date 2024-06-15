@@ -54,7 +54,7 @@ export const AlbumDetailPage = () => {
     const defaultId = id || 'default_value';
     const [album, setAlbum] = useState<Album | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('correct_token');
     const [albumUri, setAlbumUri] = useState<string | null>(null);
 
     useEffect(() => {
@@ -156,7 +156,7 @@ export const AlbumDetailPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="two text-left">
+                        <div className="two text-left pb-10">
                             <Separator />
                             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-left mt-4">
                                 Logs for {album.name}
@@ -184,8 +184,15 @@ export const AlbumDetailPage = () => {
                         </div>
                     </div>
                 )}
-             
+                
+
+                <footer class="mt-6 fixed bottom-0 w-full bg-black text-white text-center py-2">
+                
+                </footer>
+                <div class="fixed bottom-0 w-1/2">
                 <SpotPlayer accessToken = {accessToken} trackUri = {albumUri}/>                    
+                </div>
+               
    
                 
             </Container>
