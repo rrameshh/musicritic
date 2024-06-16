@@ -1,15 +1,14 @@
 # Musicritic (formerly spotiboxd)
 
-Musicritic is a web application inspired by Letterboxd, but with Spotify integration. Users can review and rate songs, create watchlists, and discover new music based on their preferences through the Spotify API. Authorization is done with OAuth and PKCE
+Musicritic is a web application inspired by Letterboxd, but with Spotify integration. Users can review, listen, and rate songs, create watchlists, and discover new music based on their preferences through the Spotify API. Authorization is done with OAuth and PKCE
 
 ![Homepage GIF](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWlmMWtrMW1sY2Npd2w0dGh5MjludGJ2ZTZpdHFjNGpiZGw3Z2JwdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ra7fRbtwsQlqKYWDnH/giphy.gif)
 
 ## Features
 
-- **Song Database**: Browse a vast database of albums, tracks, and playlists.
-- **Rating & Reviews**: Users can rate and review movies.
-- **Spotify Integration**: Discover music related to your movie preferences through Spotify API.
-
+- **Song Database**: Browse a vast database of albums.
+- **Rating & Reviews**: Users can rate and review songs.
+- **Spotify Integration**: Premium Users can play albums from the website with the Spotify SDK
 
 
 ## Technologies Used
@@ -27,7 +26,7 @@ Musicritic is a web application inspired by Letterboxd, but with Spotify integra
 - **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
 - **Express.js**: Fast, unopinionated, minimalist web framework for Node.js.
 - **MySQL**: To Create, Read, Update, and Delete reviews per album in the database
-- **Spotify API**: Integrate Spotify API to fetch albums and playlists
+- **Spotify API and SDK **: Integrate Spotify API/SDK to fetch and play albums
 
 ## Installation
 
@@ -68,7 +67,7 @@ Musicritic is a web application inspired by Letterboxd, but with Spotify integra
 6. Run the frontend:
 
    ```
-   cd frontend
+   cd ..
    npm run dev
    ```
 
