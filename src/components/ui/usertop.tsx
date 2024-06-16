@@ -92,9 +92,9 @@ const UserTop: React.FC<UserTopProps> = ({ accessToken }) => {
             <CarouselNext />
           </Carousel>
         </div>
-        {/* Add your code for recommended tracks here */}
-        {/* <UserRecommendations trackIds={userTracks}/> */}
+       
       </Container>
+      <UserRecommendations trackIds={userTracks} accessToken={accessToken}/>
     </div>
   );
 };
