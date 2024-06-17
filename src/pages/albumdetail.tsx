@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import Stars from "@/components/ui/stars.tsx";
+import { Checkbox } from "@/components/ui/checkbox"
 import { Log } from '@/Log.tsx';
+import axios, { AxiosResponse } from 'axios';
 import {
     Dialog,
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import axios from 'axios';
+// import axios from 'axios';
 import SpotPlayer from '@/components/ui/webplayer.tsx'
 
 
@@ -116,6 +118,39 @@ export const AlbumDetailPage = () => {
             
         }
     }, [album]);
+
+     const addToList = async (e) => { //CHANGE THIS TO FORM
+        const temp = localStorage.getItem('profile');
+        const user = JSON.parse(temp);
+
+        const listenEntry = {
+            userId: user?.id,
+            albumId: album?.id,
+        }
+        if (listenEntry.userId != "guest") 
+        {
+            try 
+            {
+                const response: AxiosResponse = await axios.post("https://marked-boats-production.up.railway.app/listen_list/", listenEntry);
+                console.log(response);
+            }
+            catch (err)
+            {
+                console.log(err);
+            }
+        }
+    }
+
+    // const deleteFromListen= async (e) => 
+    // {
+
+
+    // }
+
+
+
+
+
  
     return (
         <div>
@@ -143,6 +178,8 @@ export const AlbumDetailPage = () => {
                                     <p className="text-sm text-muted-foreground text-left">
                                         Popularity: {album.popularity}
                                     </p>
+
+                                    <Checkbox onClick={addToList}/>
                                     <div className='mt-4'>
                                         <Dialog>
                                             <DialogTrigger asChild>

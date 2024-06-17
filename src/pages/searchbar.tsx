@@ -4,6 +4,7 @@ import { Navbar } from '@/components/ui/navbar.tsx';
 import { Input } from '@/components/ui/input';
 import AlbumCovers from '@/pages/results.tsx';
 import axios, { AxiosResponse } from 'axios';
+
 // import { BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 // const CLIENT_ID = process.env.REACT_APP_API_KEY;
 // const CLIENT_SECRET = process.env.REACT_APP_API_SECRET;
@@ -18,6 +19,8 @@ interface Album {
     id: string;
     name: string;
     images: ImageObject[]; // Assuming you have an array of URLs for album covers
+    release_date: string;
+    // artists: 
   }
 
 export function Searchbar() {
@@ -93,6 +96,7 @@ export function Searchbar() {
     <>
 
         <Navbar />
+        <Container>
         <div className="items-center justify-end" style={{ paddingTop: '20px' }}>
           <Input
             type="search"
@@ -102,6 +106,7 @@ export function Searchbar() {
             onKeyDown={handleKeyPress}
           />
         </div>
+        </Container>
         <body>
           <AlbumCovers albums={albums} searchInput={searchInput} />
         </body>
