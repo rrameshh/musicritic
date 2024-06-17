@@ -120,13 +120,15 @@ export const AlbumDetailPage = () => {
     }, [album]);
 
      const addToList = async (e) => { //CHANGE THIS TO FORM
-        const temp = localStorage.getItem('profile');
+        const temp = localStorage.getItem('userProfile');
         const user = JSON.parse(temp);
-
+        console.log(user);
+        console.log(user.id);
         const listenEntry = {
-            userId: user?.id,
-            albumId: album?.id,
+            userId: user.id,
+            albumId: album.id,
         }
+        console.log(listenEntry);
         if (listenEntry.userId != "guest") 
         {
             try 
@@ -179,8 +181,8 @@ export const AlbumDetailPage = () => {
                                         Popularity: {album.popularity}
                                     </p>
 
-                                    <Checkbox onClick={addToList}/>
-                                    <div className='mt-4'>
+                                   
+                                    <div className='mt-4 mb-4'>
                                         <Dialog>
                                             <DialogTrigger asChild>
                                                 <Button>Toggle Log</Button>
@@ -190,6 +192,13 @@ export const AlbumDetailPage = () => {
                                             </DialogContent>
                                         </Dialog>
                                     </div>
+                                    {/* <Checkbox onClick={addToList} />
+                                        <label
+                                            htmlFor="watchlist"
+                                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ml-2 mb-1"
+                                        >
+                                          Add to Watchlist  
+                                    </label> */}
                                 </div>
                             </div>
                         </div>
@@ -223,10 +232,10 @@ export const AlbumDetailPage = () => {
                 )}
                 
 
-                <footer class="mt-6 fixed bottom-0 w-full bg-black text-white text-center py-2">
+                <footer className="mt-6 fixed bottom-0 w-full bg-black text-white text-center py-2">
                 
                 </footer>
-                <div class="fixed bottom-0 w-1/2">
+                <div className="fixed bottom-0 w-1/2">
                 <SpotPlayer accessToken = {accessToken} trackUri = {albumUri}/>                    
                 </div>
                

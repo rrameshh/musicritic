@@ -28,23 +28,13 @@ interface AlbumCoversProps {
 
 const AlbumCovers: React.FC<AlbumCoversProps> = ({ albums }) => {
   return (
-    <div className='result'>
+    <div className='result mt-4'>
 
       <Container>
         <Row className='mx-2'>
 
           {albums.map((album) => (
-            // <Col key={album.id} xs={12} sm={6} md={4} lg={3}> {/* Adjust the column sizes as needed */}
-            //   <Link to={`/album/${album.id}`}>
-            //     <Card >
-            //       <Card.Img src={album.images[1].url} className='mx-auto' width={100} height={100} /> {/* Assuming the first image URL is used */}
-            //       <Card.Body>
-
-            //       </Card.Body>
-            //       <Card.Title> <p className="leading-7 [&:not(:first-child)]:mt-6 font font-semibold">{album.name} </p></Card.Title>
-            //     </Card>
-            //   </Link>
-            // </Col>
+            
             <div className="w-full border-t border-b border-border bg-background flex hover:bg-muted">
               <Link to={`/album/${album.id}`} className="flex w-full">
                 <div className="ml-5 mt-5 mb-5 flex">
@@ -54,12 +44,12 @@ const AlbumCovers: React.FC<AlbumCoversProps> = ({ albums }) => {
                     <p className="leading-7 font-semibold text-left">{album.name}</p>
 
                     <div className="text-left">
-                      <Badge className="border border-white">{album.artists.map(artist => artist.name).join(", ")} </Badge>
+                      <Badge >{album.artists.map(artist => artist.name).join(", ")} </Badge>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-sm text-muted-foreground ml-auto mt-1">{album.release_date}</p>
+                <p className="text-sm text-muted-foreground ml-auto mt-2 mr-4">{album.release_date}</p>
               </Link>
             </div>
 
