@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container } from '@/components/ui/container';
@@ -58,6 +59,8 @@ export const AlbumDetailPage = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const accessToken = localStorage.getItem('correct_token');
     const [albumUri, setAlbumUri] = useState<string | null>(null);
+    const [topics, setTopics] = useState([]);
+    const [scrapeUrl, setScrapeUrl] = useState<string | null>(null);
 
     useEffect(() => {
         
@@ -87,8 +90,12 @@ export const AlbumDetailPage = () => {
                     const albumData: Album = response.data;
                     setAlbum(albumData);
                     setAlbumUri(albumData.uri);
+                    const albumNameSlug = albumData.name.replace(/\s+/g, '-').toLowerCase();
+                    const artistNameSlug = albumData.artists.map(artist => artist.name).join('-').replace(/\s+/g, '-').toLowerCase();
+                    setScrapeUrl(`https://www.metacritic.com/music/${albumNameSlug}/${artistNameSlug}/critic-reviews`);
                 } else {
                     console.error(`Error fetching album info. Status code: ${response.status}`);
+
                 }
             } catch (error) {
                 console.log("An error occurred");
@@ -96,6 +103,22 @@ export const AlbumDetailPage = () => {
         }
         getAlbumInfo(defaultId);
     }, [defaultId]);
+
+    useEffect(() => {
+        // Fetch data from Flask backend
+
+        axios.post('http://127.0.0.1:5000', {
+            url: scrapeUrl
+        })
+          .then(response => {
+            console.log(response.data); // Display data in console (for debugging)
+            setTopics(response.data.topics);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+            
+          });
+      }, [scrapeUrl]);
 
     useEffect(() => {
         async function fetchAlbumReviews(albumId: string) {
@@ -192,17 +215,35 @@ export const AlbumDetailPage = () => {
                                             </DialogContent>
                                         </Dialog>
                                     </div>
-                                    {/* <Checkbox onClick={addToList} />
+                                    <Checkbox onClick={addToList} />
                                         <label
                                             htmlFor="watchlist"
                                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ml-2 mb-1"
                                         >
                                           Add to Watchlist  
-                                    </label> */}
+                                    </label>
                                 </div>
                             </div>
                         </div>
                         <div className="two text-left pb-10">
+                        <Separator className="mt-5" />
+                            <div className="App mt-5 mb-1">
+                            <h3 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                                Critics Say:
+                            </h3>
+                       
+                        <div id="topics" className="d-flex justify-content-center flex-wrap mb-2">
+                            {topics.map((topic, index) => (
+                                <React.Fragment key={index}>
+                                    {topic[Object.keys(topic)[0]].map((item, idx) => (
+                                <Badge key={idx} className = 'ml-1 mr-1 text-center'>{item}</Badge>
+                                ))}
+                    
+                         </React.Fragment>
+                    ))}
+                          </div>
+                      
+                            </div>
                             <Separator />
                             <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-left mt-4">
                                 Logs for {album.name}
@@ -230,7 +271,7 @@ export const AlbumDetailPage = () => {
                         </div>
                     </div>
                 )}
-                
+                 
 
                 <footer className="mt-6 fixed bottom-0 w-full bg-black text-white text-center py-2">
                 

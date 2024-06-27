@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Container } from "@/components/ui/container.tsx"
+import { Badge } from "@/components/ui/badge";
 import UserRecommendations from '@/components/ui/userrecommendations.tsx'; 
 
 interface TopTrack {

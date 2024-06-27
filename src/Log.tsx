@@ -51,7 +51,7 @@ export function Log({ albumID, albumName, onLogSubmitted }: LogProps) {
       albumName: albumName,
       review: review,
       rating: clickedStar,
-      date: date,
+      date: date?.toString(),
       profileID: user.id,
       profileIMG: user.pfp 
     };
