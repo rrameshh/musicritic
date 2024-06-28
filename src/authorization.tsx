@@ -13,8 +13,8 @@ import SpotPlayer from '@/components/ui/webplayer.tsx'
 
 
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Your clientId
-const redirectUrl = `https://musicriticer.netlify.app/`;
-// const redirectUrl = `http://localhost:5173/`
+// const redirectUrl = `https://musicriticer.netlify.app/`;
+const redirectUrl = `http://localhost:5173/`
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -58,6 +58,7 @@ const Authorization = () => {
             setRedirectedFromSpotify(true);
             localStorage.setItem('spotifyCode', code);
         } else {
+            console.log('here ! ******')
             setIsLoading(false);
         }
 
@@ -81,6 +82,7 @@ const Authorization = () => {
 
 
             if (!userProfileData) {
+                console.log('here 2 ******')
 
                 // If user data not found, fetch it
                 getUserData(storedAccessToken);
@@ -88,10 +90,11 @@ const Authorization = () => {
 
             } else {
                 // If user data already exists, set currentUser state
+                console.log('here 3 ******')
                 setCurrentUser(JSON.parse(userProfileData));
 
                 setIsLoggedIn(true);
-                setIsLoading(false);
+                
             }
         }
     }, [redirectedFromSpotify]);
@@ -153,22 +156,28 @@ const Authorization = () => {
         const userData = await response.json();
         console.log("user??")
         console.log(userData);
-        const profile = {
-            displayName: userData.display_name,
-            id: userData.id,
-            pfp: userData.images && userData.images.length > 1 ? userData.images[1].url : '',
-            access_token: localStorage.getItem('access_token'),
-        }
-        const profileString = JSON.stringify(profile);
-        localStorage.removeItem('userProfile');
-        localStorage.setItem('userProfile', profileString);
-        console.log(profileString)
-        setCurrentUser(profile);
-        // sessionStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('loggedIn', "true");
-        //const isuserIn = sessionStorage.getItem('userIn') === 'true';
+        if (userData) {
+            console.log("THIS SHOULD WORK KSJDFKAJKSDF")
+            setIsLoggedIn(true);
+            const profile = {
+                displayName: userData.display_name,
+                id: userData.id,
+                pfp: userData.images && userData.images.length > 1 ? userData.images[1].url : '',
+                access_token: localStorage.getItem('access_token'),
+            }
+            const profileString = JSON.stringify(profile);
+            localStorage.removeItem('userProfile');
+            localStorage.setItem('userProfile', profileString);
+            console.log(profileString)
+            setCurrentUser(profile);
+            // sessionStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('loggedIn', "true");
+            //const isuserIn = sessionStorage.getItem('userIn') === 'true';
+    
+            //setIsLoggedIn(true);
 
-        //setIsLoggedIn(true);
+        }
+     
     }
 
     async function refreshTokens(refreshToken: string) {

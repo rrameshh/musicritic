@@ -11,23 +11,26 @@ export function Navbar() {
         const userProfile = localStorage.getItem('userProfile');
         const isGuest = userProfile && JSON.parse(userProfile).id === "guest";
         
-        if (spotifyCode) {
-            navigate(`/?code=${spotifyCode}`);
-        } else {
-            if (isGuest) {
-                navigate('/guest-home');
-            } else {
-                navigate('/');
-            }
+
+        if (isGuest) {
+            navigate(`/guest-home`);
         }
+        else if (spotifyCode) {
+            navigate(`/?code=${spotifyCode}`);
+        } 
+        else 
+                navigate(`/`);
+    
+        
     }
+    
 
     const navigateToSearch = () => {
         const spotifyCode = localStorage.getItem('spotifyCode');
         if (spotifyCode) {
             navigate(`/results?code=${spotifyCode}`);
         } else {
-            navigate('/results');
+            navigate(`/results`);
         }
     }
 

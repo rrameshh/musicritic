@@ -59,7 +59,7 @@ export const AlbumDetailPage = () => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const accessToken = localStorage.getItem('correct_token');
     const [albumUri, setAlbumUri] = useState<string | null>(null);
-    const [topics, setTopics] = useState([]);
+    const [topics, setTopics] = useState("");
     const [scrapeUrl, setScrapeUrl] = useState<string | null>(null);
 
     useEffect(() => {
@@ -107,12 +107,16 @@ export const AlbumDetailPage = () => {
     useEffect(() => {
         // Fetch data from Flask backend
 
-        axios.post('http://127.0.0.1:5000', {
+        // axios.post('http://127.0.0.1:5000/scrape', {
+        //     url: scrapeUrl
+        // })
+        axios.post('https://flaskbackendnmf-f8b91d1f73c2.herokuapp.com/scrape', {
             url: scrapeUrl
         })
           .then(response => {
             console.log(response.data); // Display data in console (for debugging)
             setTopics(response.data.topics);
+            console.log(typeof topics, topics)
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -192,7 +196,7 @@ export const AlbumDetailPage = () => {
                                 <img src={album.images[1].url} alt={album.name} />
                                 <div className="ml-4 mt-3">
                                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight text-left">
-                                        <Badge>Artist: {album.artists.map(artist => artist.name).join(", ")}</Badge>
+                                        <Badge className= "bg-white">Artist: {album.artists.map(artist => artist.name).join(", ")}</Badge>
                                     </h3>
                                     <h4 className="text-sm text-muted-foreground text-left mt-2">
                                         Release date: {album.release_date}
@@ -228,20 +232,17 @@ export const AlbumDetailPage = () => {
                         <div className="two text-left pb-10">
                         <Separator className="mt-5" />
                             <div className="App mt-5 mb-1">
-                            <h3 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                            <h3 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-green-500" >
                                 Critics Say:
                             </h3>
-                       
-                        <div id="topics" className="d-flex justify-content-center flex-wrap mb-2">
-                            {topics.map((topic, index) => (
-                                <React.Fragment key={index}>
-                                    {topic[Object.keys(topic)[0]].map((item, idx) => (
-                                <Badge key={idx} className = 'ml-1 mr-1 text-center'>{item}</Badge>
-                                ))}
-                    
-                         </React.Fragment>
-                    ))}
-                          </div>
+
+                            {Object.keys(topics).map(key => (
+                                <div key={key}>
+                                    {topics[key].map((word, index) => (
+                                     <Badge key={index} className="bg-white ml-1 mr-1">{word}</Badge>
+                                     ))}
+                                </div>
+                            ))}
                       
                             </div>
                             <Separator />

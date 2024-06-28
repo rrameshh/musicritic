@@ -86,11 +86,13 @@ const UserRecommendations: React.FC<{ trackIds: TopTrack[], accessToken: string 
                   >
                     {track.album.album_type === "ALBUM" ? (
                       <Link to={`/album/${track.album.id}`}>
+                        {track.album?.images[1]?.url && (
                         <img
-                          src={track.album.images[1].url}
-                          alt={track.name}
-                          className="hover:border-primary border-transparent border-2"
-                        />
+                            src={track.album.images[1].url}
+                            alt={track.name}
+                            className="hover:border-primary border-transparent border-2"
+                          />
+                        )}
                       </Link>
                     ) : (
                       <img src={track.album.images[1].url} alt={track.name} />

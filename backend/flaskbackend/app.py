@@ -8,8 +8,13 @@ import string
 import re
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import TweetTokenizer
-from flask_cors import CORS  # Import CORS from flask_cors module
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS from flask_cors module
+import nltk
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+from nltk import pos_tag
+from nltk.corpus import wordnet
 
 # Contraction map and other functions defined previously...
 app = Flask(__name__)
@@ -158,6 +163,18 @@ def expand_contractions(text, c_re=c_re):
         return c_dict[match.group(0)]
     return c_re.sub(replace, text)
 
+def get_wordnet_pos(treebank_tag):
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return ''
+
 # Function to process text
 def process_text(text):
     text = expand_contractions(text)
@@ -167,14 +184,18 @@ def process_text(text):
     tokens = [re.sub('[0-9]+', '', token) for token in tokens]
     # stemmer = SnowballStemmer('english')
     # tokens = [stemmer.stem(token) for token in tokens]
+    tagged_tokens = pos_tag(tokens)
+    tokens = [token for token, tag in tagged_tokens if get_wordnet_pos(tag) == wordnet.ADJ]
+
     tokens = [token for token in tokens if token not in punc]
     tokens = [token for token in tokens if token not in stop_words]
     tokens = [token for token in tokens if len(token) > 1]
     tokens = [token for token in tokens if ' ' not in token]
+
     return ' '.join(tokens)
 
 # Initialize Flask app
-@app.route("/", methods=['POST'])
+@app.route("/scrape", methods=['POST'])
 def scrape():
 
 # URL and request setup moved here for clarity
@@ -186,6 +207,7 @@ def scrape():
     soup = BeautifulSoup(response.text, 'html.parser')
 
     # Extract reviews (moved from previous snippet)
+    combined_review = ""
     review_dict = {'reviews': []}
     for review in soup.find_all('div', class_='review_content'):
         if review.find('div', class_='review_body'):
@@ -193,7 +215,9 @@ def scrape():
             cleaned_review = clean_text(review_text)
             processed_review = process_text(cleaned_review)
             review_dict['reviews'].append(processed_review)
+            combined_review += processed_review + ' ';
     
+    review_dict['reviews'].append(combined_review)
 
     # # Create DataFrame (moved from previous snippet)
     album_reviews = pd.DataFrame(review_dict)
@@ -203,6 +227,7 @@ def scrape():
     # # Initialize TF-IDF Vectorizer (moved from previous snippet)
     vectorizer = TfidfVectorizer(max_df=0.95, min_df=2)
     tfidf = vectorizer.fit_transform(album_reviews['reviews'])
+    # tfidf = vectorizer.fit_transform(combined_review)
 
     # # Initialize NMF model (moved from previous snippet)
     num_topics = 5  # Number of topics
@@ -211,35 +236,18 @@ def scrape():
 
     # Define a route in Flask
 
-        # # Processing (same logic as before, adjusted for Flask context)
-        # reviews = []
-        # for review in soup.find_all('div', class_='review_content'):
-        #     if review.find('div', class_='review_body'):
-        #         review_text = review.find('div', class_='review_body').text
-        #         cleaned_review = clean_text(review_text)
-        #         processed_review = process_text(cleaned_review)
-        #         reviews.append(processed_review)
-
-        # # Creating DataFrame
-        # album_reviews = pd.DataFrame({'reviews': reviews})
-
-    # # Fit and transform TF-IDF
-    # tfidf = vectorizer.transform(album_reviews['reviews'])
-
-    # # Fit NMF model
-    # nmf_model.fit(tfidf)
-
     # # Display top words for each topic
-    num_top_words = 5
+    num_top_words = 25
     feature_names = vectorizer.get_feature_names_out()
     topics = []
     for topic_idx, topic in enumerate(nmf_model.components_):
         topics.append({
             f"Topic {topic_idx}": [feature_names[i] for i in topic.argsort()[:-num_top_words - 1:-1]]
         })
+    # print(topics)
 
     return jsonify({
-        'topics': topics
+        'topics': topics[- 1]
     })
     # pass
 
