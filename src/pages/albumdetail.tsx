@@ -91,8 +91,9 @@ export const AlbumDetailPage = () => {
                     setAlbum(albumData);
                     setAlbumUri(albumData.uri);
                     const albumNameSlug = albumData.name.replace(/\s+/g, '-').toLowerCase();
-                    const artistNameSlug = albumData.artists.map(artist => artist.name).join('-').replace(/\s+/g, '-').toLowerCase();
+                    const artistNameSlug = albumData.artists[0].name.replace(/\s+/g, '-').toLowerCase();
                     setScrapeUrl(`https://www.metacritic.com/music/${albumNameSlug}/${artistNameSlug}/critic-reviews`);
+                   
                 } else {
                     console.error(`Error fetching album info. Status code: ${response.status}`);
 
@@ -122,6 +123,7 @@ export const AlbumDetailPage = () => {
             console.error('Error fetching data:', error);
             
           });
+          console.log(scrapeUrl);
       }, [scrapeUrl]);
 
     useEffect(() => {
