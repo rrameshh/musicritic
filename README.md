@@ -26,7 +26,8 @@ Musicritic is a web application inspired by Letterboxd, but with Spotify integra
 - **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
 - **Express.js**: Fast, unopinionated, minimalist web framework for Node.js.
 - **MySQL**: To Create, Read, Update, and Delete reviews per album in the database
-- **Spotify API and SDK **: Integrate Spotify API/SDK to fetch and play albums
+- **Spotify API and SDK**: Integrate Spotify API/SDK to fetch and play albums
+- **Flask**: scraped critic reviews from the web and perform algorithms such as NMF to tag albums with keywords
 
 ## Installation
 
