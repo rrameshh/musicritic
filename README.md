@@ -7,7 +7,7 @@ Musicritic is a web application inspired by Letterboxd, but with Spotify integra
 
 ## Features
 
-# NOTE: musicritic can no longer access recommendations and the top hits of today due to Spotify API depreciation
+Note: musicritic can no longer access recommendations and the top hits of today due to Spotify API depreciation
 
 - **Song Database**: Browse a vast database of albums.
 - **Rating & Reviews**: Users can rate and review songs. ()
